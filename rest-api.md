@@ -4,9 +4,9 @@
 
 | Name | base endpoint |
 | :--- | :--- |
-| rest-api | [**https://api.jbex.com**](https://api.jbex.com) |
-| web-socket-streams | [**wss://wsapi.jbex.com**](wss://wsapi.jbex.com) |
-| user-data-stream | [**wss://wsapi.jbex.com**](wss://wsapi.jbex.com) |
+| rest-api | [**https://api.hcoin86.me**](https://api.hcoin86.me) |
+| web-socket-streams | [**wss://wsapi.hcoin86.me**](wss://wsapi.hcoin86.me) |
+| user-data-stream | [**wss://wsapi.hcoin86.me**](wss://wsapi.hcoin86.me) |
 
 ## General API Information
 
