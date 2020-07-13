@@ -1,11 +1,10 @@
-# Table of contents
+# 目录
 
-* [Changelog](README.md)
-* [General Information](rest-api.md)
-* [Spot](spot-api.md)
-* [Contract](contract-api.md)
-* [Options](options-open-api.md)
-* [Websocket](websocket-stream.md)
-* [User Data Stream](userdatastream.md)
-* [Errors](errors.md)
+* [更新日志](README.md)
+* [通用基本信息](rest-api.md)
+* [币币交易](spot-api.md)
+* [合约交易](contract-api.md)
+* [Websocket推送](websocket-stream.md)
+* [用户数据流推送](userdatastream.md)
+* [错误码](errors.md)
 * [Github SDK](github-sdk.md)
