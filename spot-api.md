@@ -263,7 +263,7 @@ GET /openapi/quote/v1/trades
 | 名称 | 类型 | 是否强制 | 描述 |
 | :--- | :--- | :--- | :--- |
 | symbol | STRING | YES |  |
-| limit | INT | NO | Default 500; max 1000. |
+| limit | INT | NO | 默认500; 最大1000. |
 
 **Response:**
 
@@ -640,7 +640,7 @@ GET /openapi/v1/openOrders  (HMAC SHA256)
 | :--- | :--- | :--- | :--- |
 | symbol | String | NO |  |
 | orderId | LONG | NO |  |
-| limit | INT | NO | Default 500; max 1000. |
+| limit | INT | NO | 默认500; 最大1000. |
 | recvWindow | LONG | NO |  |
 | timestamp | LONG | YES |  |
 
@@ -674,31 +674,31 @@ GET /openapi/v1/openOrders  (HMAC SHA256)
 ]
 ```
 
-### History orders \(USER\_DATA\)
+### 历史订单 \(USER\_DATA\)
 
 ```text
 GET /openapi/v1/historyOrders (HMAC SHA256)
 ```
 
-GET all orders of the account; canceled, filled or rejected.
+获取当前账户的所有订单。亦或是取消的，完全成交的，拒绝的。
 
 **Weight:** 5
 
 **Parameters:**
 
-| Name | Type | Mandatory | Description |
+| 名称 | 类型 | 是否强制 | 描述 |
 | :--- | :--- | :--- | :--- |
 | symbol | String | NO |  |
 | orderId | LONG | NO |  |
 | startTime | LONG | NO |  |
 | endTime | LONG | NO |  |
-| limit | INT | NO | Default 500; max 1000. |
+| limit | INT | NO | 默认500; 最大1000. |
 | recvWindow | LONG | NO |  |
 | timestamp | LONG | YES |  |
 
 **Notes:**
 
-* If `orderId` is set, it will get orders &lt; that `orderId`. Otherwise most recent orders are returned.
+* 如果`orderId` 设定好了，会筛选订单小于`orderId` 的。否则会返回最近的订单信息。
 
 **Response:**
 
@@ -726,19 +726,19 @@ GET all orders of the account; canceled, filled or rejected.
 ]
 ```
 
-### Account information \(USER\_DATA\)
+### 账户信息 \(USER\_DATA\)
 
 ```text
 GET /openapi/v1/account (HMAC SHA256)
 ```
 
-GET current account information.
+获取当前账户信息
 
 **Weight:** 5
 
 **Parameters:**
 
-| Name | Type | Mandatory | Description |
+| 名称 | 类型 | 是否强制 | 描述 |
 | :--- | :--- | :--- | :--- |
 | recvWindow | LONG | NO |  |
 | timestamp | LONG | YES |  |
@@ -766,34 +766,34 @@ GET current account information.
 }
 ```
 
-### Account trade list \(USER\_DATA\)
+### 账户交易记录 \(USER\_DATA\)
 
 ```text
 GET /openapi/v1/myTrades  (HMAC SHA256)
 ```
 
-GET trades for a specific account.
+获取当前账户历史成交记录
 
 **Weight:** 5
 
 **Parameters:**
 
-| Name | Type | Mandatory | Description |
+| 名称 | 类型 | 是否强制 | 描述 |
 | :--- | :--- | :--- | :--- |
 | startTime | LONG | NO |  |
 | endTime | LONG | NO |  |
 | fromId | LONG | NO | TradeId to fetch from. |
 | toId | LONG | NO | TradeId to fetch to. |
-| limit | INT | NO | Default 500; max 1000. |
+| limit | INT | NO | 默认500; 最大1000. |
 | recvWindow | LONG | NO |  |
 | timestamp | LONG | YES |  |
 
 **Notes:**
 
-* If only `fromId` is set，it will get orders &lt; that `fromId` in descending order.
-* If only `toId` is set, it will get orders &gt; that `toId` in ascending order.
-* If `fromId` is set and `toId` is set, it will get orders &lt; that `fromId` and &gt; that `toId` in descending order.
-* If `fromId` is not set and `toId` it not set, most recent order are returned in descending order.
+* 如果只有`fromId`，会返回订单号小于`fromId`的，倒序排列。
+* 如果只有`toId`，会返回订单号小于`toId`的，升序排列。
+* 如果同时有`fromId`和`toId`, 会返回订单号在`fromId`和`toId`的，倒序排列。
+* 如果`fromId`和`toId`都没有，会返回最新的成交记录，倒序排列。
 
 **Response:**
 
@@ -815,30 +815,30 @@ GET trades for a specific account.
 ]
 ```
 
-### Account deposit list \(USER\_DATA\)
+### 账户存款记录 \(USER\_DATA\)
 
 ```text
 GET /openapi/v1/depositOrders  (HMAC SHA256)
 ```
 
-GET deposit orders for a specific account.
+获取当前账户的存款记录
 
 **Weight:** 5
 
 **Parameters:**
 
-| Name | Type | Mandatory | Description |
+| 名称 | 类型 | 是否强制 | 描述 |
 | :--- | :--- | :--- | :--- |
 | startTime | LONG | NO |  |
 | endTime | LONG | NO |  |
-| fromId | LONG | NO | Deposit OrderId to fetch from. Default gets most recent deposit orders. |
-| limit | INT | NO | Default 500; max 1000. |
+| fromId | LONG | NO | 从哪个OrderId起开始抓取。默认抓取最新的存款记录。 |
+| limit | INT | NO | 默认 500; 最大 1000. |
 | recvWindow | LONG | NO |  |
 | timestamp | LONG | YES |  |
 
 **Notes:**
 
-* If `fromId` is set, it will get orders &gt; that `fromId`. Otherwise most recent orders are returned.
+* 如果`fromId`设定好了，会筛选订单小于`fromId`的。否则会返回最近的订单信息。
 
 **Response:**
 
@@ -857,13 +857,13 @@ GET deposit orders for a specific account.
 ]
 ```
 
-### Sub-account list\(SUB\_ACCOUNT\_LIST\)
+### 子账户列表\(SUB\_ACCOUNT\_LIST\)
 
 ```text
 POST /openapi/v1/subAccount/query
 ```
 
-Query sub-account lists
+查询子账户列表
 
 **Parameters:**
 
@@ -902,26 +902,26 @@ None
 ]
 ```
 
-### Internal Account Transfer \(ACCOUNT\_TRANSFER\)
+### 账户内转账 \(ACCOUNT\_TRANSFER\)
 
 ```text
 POST /openapi/v1/transfer
 ```
 
-Internal transfer
+转账
 
 **Weight:** 1
 
 **Parameters:**
 
-| Name | Typee | Mandatory | Description |
+| 名称 | 类型 | 是否强制 | 描述 |
 | :--- | :--- | :--- | :--- |
-| fromAccountType | int | YES | source account type: 1. token trading account 2.Options account 3. Contracts account |
-| fromAccountIndex | int | YES | sub-account index\(valid when using main-account api, get sub-account indices from `SUB_ACCOUNT_LIST` endpoint\) |
-| toAccountType | int | YES | Target account type: 1. token trading account 2.Options account 3. Contracts account |
-| toAccountIndex | int | YES | sub-account index\(valid when using main-account api, get sub-account indices from `SUB_ACCOUNT_LIST` endpoint\) |
+| fromAccountType | int | YES | 源账户类型, 1 钱包(币币)账户 2 期权账户 3 合约账户 |
+| fromAccountIndex | int | YES | 子账户index, 主账户Api调用时候有用，从子账户列表接口获取|
+| toAccountType | int | YES | 目标账户类型, 1 钱包(币币)账户 2 期权账户 3 合约账户 |
+| toAccountIndex | int | YES | 子账户index, 主账户Api调用时候有用，从子账户列表接口获取 |
 | tokenId | STRING | YES | tokenID |
-| amount | STRING | YES | Transfer amount |
+| amount | STRING | YES | 转账数量 |
 
 **Response:**
 
@@ -931,34 +931,34 @@ Internal transfer
 }
 ```
 
-**Explanation**
+**说明**
 
-1. Either transferring or receiving account must be the main account \(Token trading account\)
-2. Main account api can support transferring to other account\(including sub-accounts\) and receiving from other accounts
-3. **Sub-account API only supports transferring from current account to the main-account. Therefore `fromAccountType\fromAccountIndex\toAccountType\toAccountIndex` should be left empty.**
+1、转账账户和收款账户的其中一方，必须是主账户(钱包账户)
+2、主账户Api可以从钱包账户向其他账户(包括子账户)转账，也可以从其他账户向钱包账户转账
+3、**子账户Api调用的时候只能从当前子账户向主账户(钱包账户)转账，所以fromAccountType\fromAccountIndex\toAccountType\toAccountIndex不用填**
 
-### Check Balance Flow \(BALANCE\_FLOW\)
+### 查询流水 \(BALANCE\_FLOW\)
 
 ```text
 POST /openapi/v1/balance_flow
 ```
 
-Check blance flow
+查询账户流水
 
 **Weight:** 5
 
 **Parameters:**
 
-| Name | Type | Mandatory | Description |  |  |
+| 名称 | 类型 | 是否强制 | 描述 |  |  |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| accountType | int | no | Account account\_type | 默认1 |  |
-| accountIndex | int | no | Account account\_index | 默认0 |  |
+| accountType | int | no | 账户对应的account\_type | 默认1 |  |
+| accountIndex | int | no | 账户对应的 account\_index | 默认0 |  |
 | tokenId | string | no | token\_id | eg: BTC |  |
-| fromFlowId | long | no |  | Query data that id &lt; fromFlowId |  |
-| endFlowId | long | no |  | Query data that id &gt; | endFlowId |
-| startTime | long | no | Start Time | Timestamp \(millisecond\) |  |
-| endTime | long | no | End Time | Timestamp \(millisecond\) |  |
-| limit | integer | no | Number of entries | Default is 50，max is 100 |  |
+| fromFlowId | long | no | 顺向查询数据 | 指定查询 id &lt; fromFlowId |  |
+| endFlowId | long | no |反向查询数据| 指定查询 id  &gt; | endFlowId |
+| startTime | long | no | 开始时间 | 毫秒时间戳 \(millisecond\) |  |
+| endTime | long | no | 结束时间 | 毫秒时间戳 \(millisecond\) |  |
+| limit | integer | no | 每页记录数 | 默认50，最大100 |  |
 
 **Response:**
 
@@ -969,11 +969,11 @@ Check blance flow
         "accountId": "122216245228131",
         "tokenId": "BTC",
         "tokenName": "BTC",
-        "flowTypeValue": 51, // balance flow type
-        "flowType": "USER_ACCOUNT_TRANSFER", // balance flow type name
-        "flowName": "Transfer", // balance flow type Explanation
-        "change": "-12.5", // change
-        "total": "379.624059937852365", // total asset after change
+        "flowTypeValue": 51, //  流水类型
+        "flowType": "USER_ACCOUNT_TRANSFER", // 流水类型名称
+        "flowName": "Transfer", // 流水类型说明
+        "change": "-12.5", // 变动值
+        "total": "379.624059937852365", // 变动后当前tokenId总资产
         "created": "1579093587214"
     },
     {
@@ -991,52 +991,52 @@ Check blance flow
 ]
 ```
 
-**Explanation**
+**说明**
 
-1. Main-account API can query balance flow for token account and other accounts\(including sub-accounts, or designated `accountType` and `accountIndex` accounts\)
-2. Sub-account API can only query current sub-account, therefore `accountType` and `accountIndex` is not required.
+1、主账户Api可以查询钱包账户或者其他账户(包括子账户，指定accountType和accountIndex)的流水’
+2、子账户Api只能查询当前子账户的流水，所以不用指定accountType和accountIndex
 
-**Please see the following for balance flow types**
+**流水类型说明请见如下**
 
-| Category | Parameter Type Name | Parameter Type Id | Explanation |
+| 归类 | 类型参数名 | 类型参数代号 | 解释说明 |
 | :--- | :--- | :--- | :--- |
-| General Balance Flow | TRADE | 1 | trades |
-| General Balance Flow | FEE | 2 | trading fees |
-| General Balance Flow | TRANSFER | 3 | transfer |
-| General Balance Flow | DEPOSIT | 4 | deposit |
-| Derivatives | MAKER\_REWARD | 27 | maker reward |
-| Derivatives | PNL | 28 | PnL from contracts |
-| Derivatives | SETTLEMENT | 30 | Settlement |
-| Derivatives | LIQUIDATION | 31 | Liquidation |
-| Derivatives | FUNDING\_SETTLEMENT | 32 | 期货等的资金费率结算 |
-| Internal Transfer | USER\_ACCOUNT\_TRANSFER | 51 | userAccountTransfer 专用，流水没有subjectExtId |
-| OTC | OTC\_BUY\_COIN | 65 | OTC buy coin |
-| OTC | OTC\_SELL\_COIN | 66 | OTC sell coin |
-| OTC | OTC\_FEE | 73 | OTC fees |
-| OTC | OTC\_TRADE | 200 | Old OTC balance flow |
-| Campaign | ACTIVITY\_AWARD | 67 | Campaign reward |
-| Campaign | INVITATION\_REFERRAL\_BONUS | 68 | 邀请返佣 |
-| Campaign | REGISTER\_BONUS | 69 | Registration reward |
-| Campaign | AIRDROP | 70 | Airdrop |
-| Campaign | MINE\_REWARD | 71 | Mining reward |
+| 通用流水类 | TRADE | 1 | 交易 |
+| 通用流水类 | FEE | 2 | 交易手续费 |
+| 通用流水类 | TRANSFER | 3 | 转账 |
+| 通用流水类 | DEPOSIT | 4 | 充值 |
+| 衍生品业务 | MAKER\_REWARD | 27 | maker奖励 |
+| 衍生品业务 | PNL | 28 | 期货等的盈亏 |
+| 衍生品业务 | SETTLEMENT | 30 | 交割 |
+| 衍生品业务 | LIQUIDATION | 31 | 强平 |
+| 衍生品业务 | FUNDING\_SETTLEMENT | 32 | 期货等的资金费率结算 |
+| 用户子账户之间内部转账 | USER\_ACCOUNT\_TRANSFER | 51 | userAccountTransfer 专用，流水没有subjectExtId |
+| OTC | OTC\_BUY\_COIN | 65 | OTC 买入coin |
+| OTC | OTC\_SELL\_COIN | 66 | OTC 卖出coin |
+| OTC | OTC\_FEE | 73 | OTC 手续费 |
+| OTC | OTC\_TRADE | 200 | 旧版 OTC 流水 |
+| 活动 | ACTIVITY\_AWARD | 67 | 活动奖励 |
+| 活动 | INVITATION\_REFERRAL\_BONUS | 68 | 邀请返佣 |
+| 活动 | REGISTER\_BONUS | 69 | 注册送礼 |
+| 活动 | AIRDROP | 70 | 空投 |
+| 活动 | MINE\_REWARD | 71 | 挖矿奖励 |
 
-## User data stream API
+## 用户数据流接口
 
-Specifics on how user data streams work is in another document.
+详细的用户信息流说明在另一个文档中。
 
-### Start user data stream \(USER\_STREAM\)
+### 开始用户信息流 \(USER\_STREAM\)
 
 ```text
 POST /openapi/v1/userDataStream
 ```
 
-Start a new user data stream. The stream will close after 60 minutes unless a keepalive is sent.
+开始一个新的用户信息流。如果keepalive指令没有发送，信息流将将会在60分钟后关闭。
 
 **Weight:** 1
 
 **Parameters:**
 
-| Name | Type | Mandatory | Description |
+| 名称 | 类型 | 是否强制 | 描述 |
 | :--- | :--- | :--- | :--- |
 | recvWindow | LONG | NO |  |
 | timestamp | LONG | YES |  |
