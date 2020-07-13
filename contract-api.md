@@ -477,10 +477,10 @@ GET /openapi/quote/v1/contract/trades
 
 | 名称 | 类型 | 例子 | 描述 |
 | :--- | :--- | :--- | :--- |
-| `price` | float | `0.055` | The price of the trade |
-| `time` | long | `1537797044116` | Current timestamp \(ms\) |
-| `qty` | float | `5` | The quantity traded |
-| `isBuyerMaker` | string | `true` | Maker or taker of the trade. `true`= maker, `false` = taker |
+| `price` | float | `0.055` | 交易价格 |
+| `time` | long | `1537797044116` | 当前Unix时间戳，毫秒(ms) |
+| `qty` | float | `5` | 数量（张数） |
+| `isBuyerMaker` | string | `true` | 卖方还是买方。true=卖方，false=买方 |
 
 #### **Example:**
 
@@ -497,7 +497,7 @@ GET /openapi/quote/v1/contract/trades
 
 ### `klines`
 
-Retrieves the kline information \(open, high, trade volume, etc.\) for a specific contract.
+获取某个合约的K线信息（高，低，开，收，交易量...)
 
 #### **Request Weight:**
 
@@ -511,28 +511,28 @@ GET /openapi/quote/v1/contract/klines
 
 #### **Parameters：**
 
-| Parameter | type | required | default | description |
+| 名称 | 类型 | 是否强制 | 默认 | 描述 |
 | :--- | :--- | :--- | :--- | :--- |
-| `symbol` | string | `YES` |  | Name of the contract. |
-| `interval` | string | `YES` |  | Interval of the kline. Possible values include: `1m`,`5m`,`15m`,`30m`,`1h`,`1d`,`1w`,`1M` |
-| `limit` | integer | `NO` | `1000` | Number of entries returned. Max is capped at 1000. |
-| `to` | integer | `NO` |  | timestamp of the last datapoint |
+| `symbol` | string | `YES` |  | 合约名称 |
+| `interval` | string | `YES` |  | K线图区间。可识别发送的值为： 1m,5m,15m,30m,1h,1d,1w,1M（m=分钟，h=小时,d=天，w=星期，M=月） |
+| `limit` | integer | `NO` | `1000` | 返回值的数量，最大值为1000 |
+| `to` | integer | `NO` |  | 最后一个数据点的时间戳 |
 
 #### **Response:**
 
-| name | type | example | description |
+|  名称 |  类型 | 例子 | 描述 |
 | :--- | :--- | :--- | :--- |
-| `''` | long | `1538728740000` | Open Time |
-| `''` | float | `36.00000` | Open |
-| `''` | float | `36.00000` | High |
-| `''` | float | `36.00000` | Low |
-| `''` | float | `36.00000` | Close |
-| `''` | float | `148976.11427815` | Trade volume amount |
-| `''` | long | `1538728740000` | Close time |
-| `''` | float | `2434.19055334` | Quote asset volume |
-| `''` | integer | `308` | Number of trades |
-| `''` | float | `1756.87402397` | Taker buy base asset volume |
-| `''` | float | `28.46694368` | Taker buy quote asset volume |
+| `''` | long | `1538728740000` | 开始时间戳，毫秒（ms） |
+| `''` | float | `36.00000` | 开盘价 |
+| `''` | float | `36.00000` | 最高价 |
+| `''` | float | `36.00000` | 最低价 |
+| `''` | float | `36.00000` | 收盘价 |
+| `''` | float | `148976.11427815` | 合约交易金额 |
+| `''` | long | `1538728740000` | 停止时间戳，毫秒（ms） |
+| `''` | float | `2434.19055334` | 交易数量（张数） |
+| `''` | integer | `308` | 已成交数量（张数） |
+| `''` | float | `1756.87402397` | 买方购买金额 |
+| `''` | float | `28.46694368` | 买方购买数量（张数） |
 
 #### **Example:**
 
@@ -554,15 +554,15 @@ GET /openapi/quote/v1/contract/klines
 ]
 ```
 
-`base asset` means the quantity is expressed as the amount of contracts that were received by the buyer.
+`base asset` 代表买方收到了该数量的合约
 
-`quote asset` means the amount of tokens paid to acquire the contracts.
+`quote asset` 代表该数量的token用来获得合约
 
-## Private API
+## 私有接口
 
 ### `order`
 
-Places order for a contract. This API endpoint requires your request to be signed.
+合约下单，这个端点需要签名访问。
 
 #### **Request Weight:**
 
@@ -576,48 +576,48 @@ POST /openapi/contract/v1/order
 
 #### **Parameters：**
 
-| Parameter | type | required | default | description |
+| 名称 | 类型 | 是否强制 | 默认 | 描述 |
 | :--- | :--- | :--- | :--- | :--- |
-| `symbol` | string | `YES` |  | Name of the contract. |
-| `side` | string | `YES` |  | Direction of the order. Possible values include `BUY_OPEN`, `SELL_OPEN`, `BUY_CLOSE`, and `SELL_CLOSE`. |
-| `orderType` | string | `YES` |  | The order type, possible types: `LIMIT`, `STOP` |
-| `quantity` | float | `YES` |  | The number of contracts to buy. |
-| `leverage` | float | `YES`\(**NOT REQUIRED** for \*\_CLOSE" orders\) |  | Leverage of the order. |
-| `price` | float | `NO`. **REQUIRED** for \(`LIMIT` & `INPUT`\) orders |  | Price of the order |
-| `priceType` | string | `NO` | `INPUT` | The price type, possible types include: `INPUT`, `OPPONENT`, `QUEUE`, `OVER`, and `MARKET`. |
-| `triggerPrice` | float | `NO`. **REQUIRED** for `STOP` orders. |  | The price at which the trigger order will be executed. |
-| `timeInForce` | string | `NO` | `GTC` | Time in force for `LIMIT` orders. Possible values include `GTC`,`FOK`,`IOC`,`LIMIT_MAKER`. |
-| `clientOrderId` | string/long | `YES` |  | A unique ID of the order \(user defined\) |
+| `symbol` | string | `YES` |  | 合约名称。 |
+| `side` | string | `YES` |  | 下单方向，方向类型为BUY_OPEN、SELL_OPEN、BUY_CLOSE、SELL_CLOSE。 |
+| `orderType` | string | `YES` |  | 订单类型，支持订单类型为 LIMIT和STOP。 |
+| `quantity` | float | `YES` |  | 订单的合约数量。 |
+| `leverage` | float | `YES`（*_CLOSE平仓单不强制） |  | 订单的杠杆。 |
+| `price` | float | `NO`. (LIMIT&INPUT)订单 强制需要 |  | 订单价格。 |
+| `priceType` | string | `NO` | `INPUT` | 价格类型，支持的价格类型为INPUT、OPPONENT、QUEUE、OVER、MARKET。 |
+| `triggerPrice` | float | `NO`. NO. STOP 订单 强制需要 |  | 计划委托的触发价格。 |
+| `timeInForce` | string | `NO` | `GTC` | LIMIT订单的时间指令（Time in Force），目前支持的类型为GTC、FOK、IOC、LIMIT_MAKER。 |
+| `clientOrderId` | string/long | `YES` |  | 订单的ID，用户自己定义。 |
 
-**NOTE** For **Market Orders**, you need to set `orderType` as **`LIMIT`** **AND** `priceType` as **`MARKET`**.
+注意： 对于 市价订单, 你需要设置orderType为 LIMIT 并且设置 priceType 为 MARKET.
 
-You can get contracts' price, quantity precision configuration data in the `brokerInfo` endpoint.
+你可以在brokerInfo端点获取合约价格，数量的精度配置信息。
 
-Note: if your balance does not meet the margin requirement \(which is the minimum margin requirement + open position fee + close position fee\), "_insufficient balance_" error message will be returned.
+注意：如果你的余额没有达到需要保证金的要求（初始保证金+开仓手续费+平仓手续费），将会有"insufficient balance"（余额不足）的错误返回。
 
-For detailed information regarding various _price types_ and _order types_. Please refer to the explanation section in the end.
+对于 价格类型 和 订单类型 的详细解释，请参见文末。
 
 #### **Response:**
 
-| Name | type | example | description |
+|  名称 |  类型 | 例子 | 描述 |
 | :--- | :--- | :--- | :--- |
-| `time` | long | `1570759718825` | Timestamp when the order is created. |
-| `updateTime` | long | `1551062936784` | Last time this order was updated |
-| `orderId` | integer | `469961015902208000` | ID of the order. |
-| `clientOrderId` | string | `213443` | A unique ID of the order. |
-| `symbol` | string | `BTC-PERP-REV` | Name of the contract. |
-| `price` | float | `8200` | Price of the order. |
-| `leverage` | float | `4` | Leverage of the order. |
-| `origQty` | float | `1.01` | Quantity ordered |
-| `executedQty` | float | `1.01` | Quantity of orders that has been executed |
-| `avgPrice` | float | `4754.24` | Average price of filled orders. |
-| `marginLocked` | float | `200` | Amount of margin locked for this order. This includes the actually margin needed plus fees to open and close the position. |
-| `orderType` | string | `YES` | The order type, possible types: `LIMIT`, `STOP` |
-| `priceType` | string | `INPUT` | The price type. Possible values include `INPUT`, `OPPONENT`, `QUEUE`, `OVER`, and `MARKET`. |
-| `side` | string | `BUY` | Direction of the order. Possible values include `BUY_OPEN`, `SELL_OPEN`, `BUY_CLOSE`, and `SELL_CLOSE`. |
-| `status` | string | `NEW` | The state of the order.Possible values include `NEW`, `PARTIALLY_FILLED`, `FILLED`, `CANCELED`, and `REJECTED`. |
-| `timeInForce` | string | `GTC` | Time in force. Possible values include `GTC`,`FOK`,`IOC`, and `LIMIT_MAKER` |
-| `fees` |  |  | Fees incurred for this order. |
+| `time` | long | `1570759718825` | 订单生成时的时间戳 |
+| `updateTime` | long | `1551062936784` | 订单上次更新的时间戳 |
+| `orderId` | integer | `469961015902208000` | 订单ID |
+| `clientOrderId` | string | `213443` | 用户定义的订单ID |
+| `symbol` | string | `BTC-PERP-REV` | 合约名称 |
+| `price` | float | `8200` | 订单价格 |
+| `leverage` | float | `4` | 订单杠杆 |
+| `origQty` | float | `1.01` | 订单数量 |
+| `executedQty` | float | `1.01` | 订单已执行数量 |
+| `avgPrice` | float | `4754.24` | 平均交易价格 |
+| `marginLocked` | float | `200` | 该订单锁定的保证金。这包括实际需要的保证金外加开仓和平仓所需的费用。 |
+| `orderType` | string | `YES` | 订单类型（LIMIT和STOP） |
+| `priceType` | string | `INPUT` | 价格类型（INPUT、OPPONENT、QUEUE、OVER、MARKET） |
+| `side` | string | `BUY` | 订单方向（BUY_OPEN、SELL_OPEN、BUY_CLOSE、SELL_CLOSE） |
+| `status` | string | `NEW` | 订单状态（NEW、PARTIALLY_FILLED、FILLED、CANCELED、REJECTED） |
+| `timeInForce` | string | `GTC` | 时效单（Time in Force)类型(GTC、FOK、IOC、LIMIT_MAKER) |
+| `fees` |  |  | 订单的手续费 |
 
 #### **Example:**
 
@@ -645,7 +645,7 @@ For detailed information regarding various _price types_ and _order types_. Plea
 
 ### `cancel`
 
-Cancels an order, specified by `orderId` or `clientOrderId`. This API endpoint requires your request to be signed.
+取消某个订单，需要发送orderId或者clientOrderId其中之一。这个API端点需要你的请求签名。
 
 #### **Request Weight:**
 
@@ -659,42 +659,42 @@ DELETE /openapi/contract/v1/order/cancel
 
 #### **Parameter:**
 
-| Parameter | type | required | default | description |
+| 名称 | 类型 | 是否强制 | 默认 | 描述 |
 | :--- | :--- | :--- | :--- | :--- |
-| `orderId` | integer | `NO` |  | The order ID of the order to be canceled |
-| `clientOrderId` | string | `NO` |  | Unique client customized ID of the order. |
-| `orderType` | string | `YES` |  | The order type, possible types: `LIMIT` and `STOP`. |
+| `orderId` | integer | `NO` |  | 订单的ID |
+| `clientOrderId` | string | `NO` |  | 用户定义的订单ID |
+| `orderType` | string | `YES` |  | 订单类型（LIMIT和STOP） |
 
-One **MUST** be provided for either of these two parameters.
+注意：orderId 或者 clientOrderId 必须发送其中之一
 
 #### **Response:**
 
-| Name | type | example | description |
+|  名称 |  类型 | 例子 | 描述 |
 | :--- | :--- | :--- | :--- |
-| `time` | long | `1551062936784` | Timestamp when the order is created. |
-| `updateTime` | long | `1551062936784` | Last time this order was updated |
-| `orderId` | integer | `891` | ID of the order. |
-| `clientOrderId` | string | `213443` | A unique ID of the order. |
-| `symbol` | string | `BTC-PERP-REV` | Name of the contract. |
-| `price` | float | `4765.29` | Price of the order. |
-| `leverage` | float | `4` | Leverage of the order. |
-| `origQty` | float | `1.01` | Quantity ordered |
-| `executedQty` | float | `1.01` | Quantity of orders that has been executed |
-| `avgPrice` | float | `4754.24` | Average price of filled orders. |
-| `marginLocked` | float | `200` | Amount of margin locked for this order. This includes the actually margin needed plus fees to open and close the position. |
-| `orderType` | string | `LIMIT` | The order type, possible types: `LIMIT` and `STOP`. |
-| `priceType` | string | `INPUT` | The price type. Possible values include `INPUT`, `OPPONENT`, `QUEUE`, `OVER`, and `MARKET`. |
-| `side` | string | `BUY_OPEN` | Direction of the order. Possible values include `BUY_OPEN`, `BUY_CLOSE`, `SELL_OPEN` and `SELL_CLOSE` |
-| `status` | string | `NEW` | The state of the order.Possible values include `NEW`, `PARTIALLY_FILLED`, `FILLED`, `CANCELED`, and `REJECTED`. |
-| `timeInForce` | string | `GTC` | Time in force. Possible values include `GTC`,`FOK`,`IOC`, and `LIMIT_MAKER` |
-| `fees` |  |  | Fees incurred for this order. |
+| `time` | long | `1551062936784` | 订单生成时的时间戳 |
+| `updateTime` | long | `1551062936784` | 订单上次更新的时间戳 |
+| `orderId` | integer | `891` | 订单ID |
+| `clientOrderId` | string | `213443` | 用户定义的订单ID |
+| `symbol` | string | `BTC-PERP-REV` | 合约名称 |
+| `price` | float | `4765.29` | 订单价格 |
+| `leverage` | float | `4` | 订单杠杆 |
+| `origQty` | float | `1.01` | 订单数量 |
+| `executedQty` | float | `1.01` | 订单已执行数量 |
+| `avgPrice` | float | `4754.24` | 平均交易价格 |
+| `marginLocked` | float | `200` | 该订单锁定的保证金。这包括实际需要的保证金外加开仓和平仓所需的费用。 |
+| `orderType` | string | `LIMIT` | 订单类型（LIMIT和STOP） |
+| `priceType` | string | `INPUT` | 价格类型（INPUT、OPPONENT、QUEUE、OVER、MARKET） |
+| `side` | string | `BUY_OPEN` | 订单方向（BUY_OPEN、SELL_OPEN、BUY_CLOSE、SELL_CLOSE） |
+| `status` | string | `NEW` | 订单状态（NEW、PARTIALLY_FILLED、FILLED、CANCELED、REJECTED）。该端点返回的订单状态都是CANCELED |
+| `timeInForce` | string | `GTC` | 时效单（Time in Force)类型(GTC、FOK、IOC、LIMIT_MAKER) |
+| `fees` |  |  | 订单的手续费 |
 
-In the `fees` field:
+在fees信息组里:
 
-| Name | type | example | description |
+|  名称 |  类型 | 例子 | 描述 |
 | :--- | :--- | :--- | :--- |
-| `feeToken` | string | `USDT` | Fee token kind. |
-| `fee` | float | `0` | Actual transaction fees occurred. |
+| `feeToken` | string | `USDT` | 手续费计价类型 |
+| `fee` | float | `0` | 实际手续费 |
 
 #### **Example:**
 
@@ -722,7 +722,7 @@ In the `fees` field:
 
 #### `batchCancel`
 
-Cancel orders en masse. \(**PENDING: batch cancel for STOP orders**\)
+批量撤销订单(正在建设中: 计划委托的批量撤单)
 
 #### **Request Weight:**
 
@@ -736,16 +736,16 @@ DELETE /openapi/contract/v1/order/batchCancel
 
 #### **Parameter:**
 
-| Parameter | type | required | default | description |
+| 名称 | 类型 | 是否强制 | 默认 | 描述 |
 | :--- | :--- | :--- | :--- | :--- |
-| `symbol` | string/list | `NO` |  | The symbol ids of the cancel orders |
+| `symbol` | string/list | `NO` |  | 合约名称（或者用,分割的合约名称的list） |
 
 #### **Response:**
 
-| Name | type | example | description |
+|  名称 |  类型 | 例子 | 描述 |
 | :--- | :--- | :--- | :--- |
-| `message` | string | `success` | The message response of the cancel request. |
-| `timestamp` | long | `1541161088303` | The timestamp when the response is returned. |
+| `message` | string | `success` | 撤单请求的返回消息 |
+| `timestamp` | long | `1541161088303` | 返回时的时间戳 |
 
 #### **Example:**
 
@@ -758,7 +758,7 @@ DELETE /openapi/contract/v1/order/batchCancel
 
 #### `openOrders`
 
-Retrieves open orders. This API endpoint requires your request to be signed.
+未完成委托，这个API端点需要请求签名。
 
 #### **Request Weight:**
 
@@ -772,37 +772,37 @@ GET /openapi/contract/v1/openOrders
 
 #### **Parameters:**
 
-| Parameter | type | required | default | description |
+| 名称 | 类型 | 是否强制 | 默认 | 描述 |
 | :--- | :--- | :--- | :--- | :--- |
-| `symbol` | string | `NO` |  | Symbol to return open orders for. If not sent, orders of all contracts will be returned. |
-| `orderId` | integer | `NO` |  | Order ID |
-| `side` | string | `NO` |  | Direction of the order. Possible values include `BUY_OPEN`, `SELL_OPEN`, `BUY_CLOSE`, and `SELL_CLOSE`. |
-| `orderType` | string | `YES` |  | The order type, possible types: `LIMIT` and `STOP`. |
-| `limit` | integer | `NO` | `20` | Number of entries to return. |
+| `symbol` | string | `NO` |  | 合约名称。如果没有在请求里发送，所有合约的未完成委托都会被返回。 |
+| `orderId` | integer | `NO` |  | 订单ID |
+| `side` | string | `NO` |  | 订单方向（BUY_OPEN、SELL_OPEN、BUY_CLOSE、SELL_CLOSE） |
+| `orderType` | string | `YES` |  | 订单类型（LIMIT、STOP） |
+| `limit` | integer | `NO` | `20` | 返回值的长度。 |
 
-If `orderId` is set, it will get orders &lt; that `orderId`. Otherwise most recent orders are returned.
+如果发送了orderId，会返回所有< orderId的订单。如果没有则会返回最新的未完成订单。
 
 #### **Response:**
 
-| Name | type | example | description |
+|  名称 |  类型 | 例子 | 描述 |
 | :--- | :--- | :--- | :--- |
-| `time` | long | `1551062936784` | Timestamp when the order is created. |
-| `updateTime` | long | `1551062936784` | Last time this order was updated |
-| `orderId` | integer | `891` | ID of the order. |
-| `clientOrderId` | string | `213443` | A unique ID of the order. |
-| `symbol` | string | `BTC-PERP-REV` | Name of the contracts. |
-| `price` | float | `4765.29` | Price of the order. |
-| `leverage` | float | `4` | Leverage of the order. |
-| `origQty` | float | `1.01` | Quantity ordered |
-| `executedQty` | float | `1.01` | Quantity of orders that has been executed |
-| `avgPrice` | float | `4754.24` | Average price of filled orders. |
-| `marginLocked` | float | `200` | Amount of margin locked for this order. This includes the actually margin needed plus fees to open and close the position. |
-| `orderType` | string | `LIMIT` | The order type, possible types: `LIMIT` and `STOP`. |
-| `priceType` | string | `INPUT` | The price type. Possible values include `INPUT`, `OPPONENT`, `QUEUE`, `OVER`, and `MARKET`. |
-| `side` | string | `BUY_OPEN` | Direction of the order. Possible values include `BUY_OPEN`, `SELL_OPEN`, `BUY_CLOSE`, and `SELL_CLOSE`. |
-| `status` | string | `NEW` | The state of the order.Possible values include `NEW`, `PARTIALLY_FILLED`, `FILLED`, `CANCELED`, and `REJECTED`. |
-| `timeInForce` | string | `GTC` | Time in force. Possible values include `GTC`,`FOK`,`IOC`, and `LIMIT_MAKER`. |
-| `fees` |  |  | Fees incurred for this order. |
+| `time` | long | `1551062936784` | 订单生成时的时间戳 |
+| `updateTime` | long | `1551062936784` | 订单上次更新的时间戳 |
+| `orderId` | integer | `891` | 订单ID |
+| `clientOrderId` | string | `213443` | 用户定义的订单ID |
+| `symbol` | string | `BTC-PERP-REV` | 合约名称 |
+| `price` | float | `4765.29` | 订单价格 |
+| `leverage` | float | `4` | 订单杠杆 |
+| `origQty` | float | `1.01` | 订单数量 |
+| `executedQty` | float | `1.01` | 订单已执行数量 |
+| `avgPrice` | float | `4754.24` | 平均交易价格 |
+| `marginLocked` | float | `200` | 该订单锁定的保证金。这包括实际需要的保证金外加开仓和平仓所需的费用。 |
+| `orderType` | string | `LIMIT` | 订单类型（LIMIT和STOP） |
+| `priceType` | string | `INPUT` | 价格类型（INPUT、OPPONENT、QUEUE、OVER、MARKET） |
+| `side` | string | `BUY_OPEN` | 订单方向（BUY_OPEN、SELL_OPEN、BUY_CLOSE、SELL_CLOSE） |
+| `status` | string | `NEW` | 订单状态（NEW、PARTIALLY_FILLED、FILLED、CANCELED、REJECTED） |
+| `timeInForce` | string | `GTC` | 时效单（Time in Force)类型(GTC、FOK、IOC、LIMIT_MAKER) |
+| `fees` |  |  | 订单的手续费 |
 
 #### **Example:**
 
@@ -906,7 +906,7 @@ If `orderId` is set, it will get orders &lt; that `orderId`. Otherwise most rece
 
 ### `getOrder`
 
-Get details on a specific order, regardless of order state.
+获取某个订单的详细信息
 
 #### **Request Weight:**
 
@@ -920,35 +920,35 @@ GET /openapi/contract/v1/getOrder
 
 #### **Parameters:**
 
-| Parameter | type | required | default | description |
+| 名称 | 类型 | 是否强制 | 默认 | 描述 |
 | :--- | :--- | :--- | :--- | :--- |
-| `orderId` | integer | `NO` |  | Order ID. |
-| `clientOrderId` | string | `NO` |  | Unique client customized ID of the order. |
-| `orderType` | string | `YES` |  | The order type, possible types: `LIMIT`, `STOP` |
+| `orderId` | integer | `NO` |  | 订单ID |
+| `clientOrderId` | string | `NO` |  | 用户定义的订单ID |
+| `orderType` | string | `YES` |  | 订单类型（LIMIT和STOP） |
 
-**Either `orderId` or `clientOrderId` must be sent**
+注意：orderId 或者 clientOrderId 必须发送其中之一
 
 #### **Response:**
 
-| Name | type | example | description |
+|  名称 |  类型 | 例子 | 描述 |
 | :--- | :--- | :--- | :--- |
-| `time` | long | `1551062936784` | Timestamp when the order is created. |
-| `updateTime` | long | `1551062936784` | Last time this order was updated |
-| `orderId` | integer | `891` | ID of the order. |
-| `clientOrderId` | string | `213443` | A unique ID of the order. |
-| `symbol` | string | `BTC-PERP-REV` | Name of the contracts. |
-| `price` | float | `4765.29` | Price of the order. |
-| `leverage` | float | `4` | Leverage of the order. |
-| `origQty` | float | `1.01` | Quantity ordered |
-| `executedQty` | float | `1.01` | Quantity of orders that has been executed |
-| `avgPrice` | float | `4754.24` | Average price of filled orders. |
-| `marginLocked` | float | `200` | Amount of margin locked for this order. This includes the actually margin needed plus fees to open and close the position. |
-| `orderType` | string | `LIMIT` | The order type, possible types: `LIMIT` and `STOP`. |
-| `priceType` | string | `INPUT` | The price type. Possible values include `INPUT`, `OPPONENT`, `QUEUE`, `OVER`, and `MARKET`. |
-| `side` | string | `BUY_OPEN` | Direction of the order. Possible values include `BUY_OPEN`, `SELL_OPEN`, `BUY_CLOSE`, and `SELL_CLOSE`. |
-| `status` | string | `NEW` | The state of the order.Possible values include `NEW`, `PARTIALLY_FILLED`, `FILLED`, `CANCELED`, and `REJECTED`. |
-| `timeInForce` | string | `GTC` | Time in force. Possible values include `GTC`,`FOK`,`IOC`, and `LIMIT_MAKER`. |
-| `fees` |  |  | Fees incurred for this order. |
+| `time` | long | `1551062936784` | 订单生成时的时间戳 |
+| `updateTime` | long | `1551062936784` | 订单上次更新的时间戳 |
+| `orderId` | integer | `891` | 订单ID |
+| `clientOrderId` | string | `213443` | 用户定义的订单ID |
+| `symbol` | string | `BTC-PERP-REV` | 合约名称 |
+| `price` | float | `4765.29` | 订单价格 |
+| `leverage` | float | `4` | 订单杠杆 |
+| `origQty` | float | `1.01` | 订单数量 |
+| `executedQty` | float | `1.01` | 订单已执行数量 |
+| `avgPrice` | float | `4754.24` | 平均交易价格 |
+| `marginLocked` | float | `200` | 该订单锁定的保证金。这包括实际需要的保证金外加开仓和平仓所需的费用。 |
+| `orderType` | string | `LIMIT` | 订单类型（LIMIT和STOP） |
+| `priceType` | string | `INPUT` | 价格类型（INPUT、OPPONENT、QUEUE、OVER、MARKET）|
+| `side` | string | `BUY_OPEN` | 订单方向（BUY_OPEN、SELL_OPEN、BUY_CLOSE、SELL_CLOSE） |
+| `status` | string | `NEW` | 订单状态（NEW、PARTIALLY_FILLED、FILLED、CANCELED、REJECTED） |
+| `timeInForce` | string | `GTC` | 时效单（Time in Force)类型(GTC、FOK、IOC、LIMIT_MAKER) |
+| `fees` |  |  | 订单的手续费 |
 
 #### **Example:**
 
@@ -976,7 +976,7 @@ GET /openapi/contract/v1/getOrder
 
 ### `myTrades`
 
-Retrieve the trade history of the account. This API endpoint requires your request to be signed.
+返回账户的成交历史，这个API端点需要请求签名。
 
 #### **Request Weight:**
 
@@ -990,29 +990,30 @@ GET /openapi/contract/v1/myTrades
 
 #### **Parameters:**
 
-| Parameter | type | required | default | description |
+
+| 名称 | 类型 | 是否强制 | 默认 | 描述 |
 | :--- | :--- | :--- | :--- | :--- |
-| `symbol` | string | `NO` |  | Name of the contract. If not sent, trades for all symbols will be returned. |
-| `limit` | integer | `NO` | `20` | The number of trades returned \(clamped to max 1000\) |
-| `side` | string | `NO` |  | Direction of the order. |
-| `fromId` | integer | `NO` |  | TradeId to fetch from. |
-| `toId` | integer | `NO` |  | TradeId to fetch to. |
+| `symbol` | string | `NO` |  | 合约名称。如果没有发送，所有合约的成交历史都会被返回。 |
+| `limit` | integer | `NO` | `20` | 返回限制(最大值为1000) |
+| `side` | string | `NO` |  | 订单方向 |
+| `fromId` | integer | `NO` |  | 从TradeId开始（用来查询成交订单） |
+| `toId` | integer | `NO` |  | 到TradeId结束（用来查询成交订单） |
 
 #### **Response:**
 
-| Name | type | example | description |
+|  名称 |  类型 | 例子 | 描述 |
 | :--- | :--- | :--- | :--- |
-| `time` | long | `1551062936784` | Timestamp when the order is created. |
-| `tradeId` | long | `49366` | The ID for the trade |
-| `orderId` | integer | `891` | ID of the order. |
-| `matchOrderId` | long | `630491432` | ID of the match order. |
-| `symbolId` | string | `BTC-PERP-REV` | Name of the contract. |
-| `price` | float | `4765.29` | Price of the trade. |
-| `quantity` | float | `1.01` | Quantity of the trade. |
-| `feeTokenId` | string | `USDT` | Fee token name. |
-| `fee` |  |  | Fee of the trade. |
-| `side` | string | `BUY` | Direction of the order. Possible values include `BUY_OPEN`, `SELL_OPEN`, `BUY_CLOSE`, and `SELL_CLOSE`. |
-| `orderType` | string | `LIMIT` | The order type, possible types: LIMIT, MARKET |
+| `time` | long | `1551062936784` | 订单生成时的时间戳 |
+| `tradeId` | long | `49366` | 成交ID |
+| `orderId` | integer | `891` | 订单ID |
+| `matchOrderId` | long | `630491432` | 成交对手订单ID |
+| `symbolId` | string | `BTC-PERP-REV` | 合约名称 |
+| `price` | float | `4765.29` | 成交价格 |
+| `quantity` | float | `1.01` | 成交数量 |
+| `feeTokenId` | string | `USDT` | 手续费类型（Token名称） |
+| `fee` |  |  | 实际手续费 |
+| `side` | string | `BUY` | 订单方向（BUY_OPEN、SELL_OPEN、BUY_CLOSE、SELL_CLOSE） |
+| `orderType` | string | `LIMIT` | 订单类型（LIMIT、MARKET) |
 
 #### **Example:**
 
@@ -1037,7 +1038,7 @@ GET /openapi/contract/v1/myTrades
 
 ### `positions`
 
-Retrieves current positions. This API endpoint requires your request to be signed.
+返回现在的仓位信息，这个API需要请求签名。
 
 #### **Request Weight:**
 
@@ -1051,29 +1052,29 @@ GET /openapi/contract/v1/positions
 
 #### **Parameters:**
 
-| Parameter | type | required | default | description |
+| 名称 | 类型 | 是否强制 | 默认 | 描述 |
 | :--- | :--- | :--- | :--- | :--- |
-| `symbol` | string | `NO` |  | Name of the contract. If not sent, positions for all contracts will be returned. |
-| `side` | string | `NO` |  | `LONG` or `SHORT`. Direction of the position. If not sent, positions for both sides will be returned. |
+| `symbol` | string | `NO` |  | 合约名称。如果没有发送，所有的合约仓位信息都会被返回。 |
+| `side` | string | `NO` |  | 仓位方向，LONG（多仓）或者SHORT（空仓）。如果没有发送，两个方向的仓位信息都会被返回。 |
 
 #### **Response:**
 
-| Name | type | example | description |
+|  名称 |  类型 | 例子 | 描述 |
 | :--- | :--- | :--- | :--- |
-| `symbol` | string | `BTC-PERP-REV` | Name of the contract. |
-| `side` | string | `LONG` | Position side. |
-| `avgPrice` | float | `100` | Average price for opening the position. |
-| `position` | float | `20` | Amount of contracts opened |
-| `available` | float | `15` | Amount of contracts available to close. |
-| `leverage` | float | `5` | Leverage of the position |
-| `lastPrice` | float | `100` | Last trade price of the symbol. |
-| `positionValue` | float | `2000` | Current position value. |
-| `flp` | float | `80` | Forced liquidation price. |
-| `margin` | float | `20` | Margin for this position. |
-| `marginRate` | float | `0.2` | Margin rate for current position. |
-| `unrealizedPnL` | float | `0.0` | Unrealized profit and loss for current position held. |
-| `profitRate` | float | `0.0000333` | Rate of return for the position. |
-| `realizedPnL` | float | `6.8` | Cumulative realized profit and loss for this `symbol`. |
+| `symbol` | string | `BTC-PERP-REV` | 合约名称 |
+| `side` | string | `LONG` | 仓位方向（LONG、SHORT） |
+| `avgPrice` | float | `100` | 平均开仓价格 |
+| `position` | float | `20` | 开仓数量（张） |
+| `available` | float | `15` | 可平仓数量（张） |
+| `leverage` | float | `5` | 仓位现在杠杆 |
+| `lastPrice` | float | `100` | 合约最新市场成交价 |
+| `positionValue` | float | `2000` | 仓位价值 |
+| `flp` | float | `80` | 强制平仓价格 |
+| `margin` | float | `20` | 仓位保证金 |
+| `marginRate` | float | `0.2` | 当前仓位的保证金率 |
+| `unrealizedPnL` | float | `0.0` | 当前仓位的未实现盈亏 |
+| `profitRate` | float | `0.0000333` | 当前仓位的盈利率 |
+| `realizedPnL` | float | `6.8` | 当前 合约 的已实现盈亏 |
 
 #### **Example:**
 
@@ -1100,7 +1101,7 @@ GET /openapi/contract/v1/positions
 
 ### `account`
 
-This endpoint is used to retrieve contract account balance. This endpoint requires you to be signed.
+返回合约账户余额，这个端点需要请求签名。
 
 #### **Request Weight:**
 
@@ -1118,12 +1119,12 @@ None
 
 #### **Response:**
 
-| Name | type | example | description |
+|  名称 |  类型 | 例子 | 描述 |
 | :--- | :--- | :--- | :--- |
-| `total` | float | `131.06671401` | Total balance. |
-| `availableMargin` | float | `131.0545541` | Available margin for use. |
-| `positionMargin` | float | `0.01215991` | Margin for positions. |
-| `orderMargin` | float | `0` | Margin locked for open orders. |
+| `total` | float | `131.06671401` | 总余额 |
+| `availableMargin` | float | `131.0545541` | 可用保证金 |
+| `positionMargin` | float | `0.01215991` | 仓位保证金 |
+| `orderMargin` | float | `0` | 委托保证金（下单锁定） |
 
 #### **Example:**
 
@@ -1140,7 +1141,7 @@ None
 
 ### `modifyMargin`
 
-Modify margin for a specific symbol. This endpoint requires your position to be signed.
+更改某个合约仓位的保证金，这个端点需要请求签名。
 
 #### **Request Weight:**
 
@@ -1154,19 +1155,19 @@ POST  /openapi/contract/v1/modifyMargin
 
 #### **Parameters:**
 
-| Parameter | type | required | default | description |
+| 名称 | 类型 | 是否强制 | 默认 | 描述 |
 | :--- | :--- | :--- | :--- | :--- |
-| `symbol` | string | `YES` |  | The symbol's margin to be modified. |
-| `side` | string | `YES` |  | LONG or SHORT. Direction of the position. |
-| `amount` | float | `YES` |  | Amount of margin to be added \(Positive Value\) or removed \(Negative Value\). Please note that this amount refers to the underlying quote asset of the asset. |
+| `symbol` | string | `YES` |  | 合约名称。 |
+| `side` | string | `YES` |  | 仓位方向，LONG（多仓）或者SHORT（空仓）。 |
+| `amount` | float | `YES` |  | 增加（正值）或者减少（负值）保证金的数量。请注意这个数量指的是合约标的定价资产（即合约结算的标的）。 |
 
 #### **Response:**
 
-| Name | type | example | description |
+|  名称 |  类型 | 例子 | 描述 |
 | :--- | :--- | :--- | :--- |
-| `symbol` | string | `BTC-PERP-REV` | The name of the contract. |
-| `margin` | float | `12.3` | Updated margin for the symbol. |
-| `timestamp` | long | `1541161088303` | Updated timestamp |
+| `symbol` | string | `BTC-PERP-REV` | 合约名称 |
+| `margin` | float | `12.3` | 更新后的仓位保证金 |
+| `timestamp` | long | `1541161088303` | 更新时间戳 |
 
 #### **Example:**
 
