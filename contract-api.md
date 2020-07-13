@@ -123,33 +123,33 @@ GET /openapi/v1/brokerInfo
 | `status` | string | `TRADING` | 合约状态 |
 | `baseAsset` | string | `BTCUSD` | 基础资产。对于合约来说，合约本身就是基础资产。 |
 | `baseAssetPrecision` | float | `0.001` | 基础资产（合约数量）的精度 |
-| `quoteAsset` | string | `USDT` | Quote asset for the contract. Meaning the contract is quoted in that currency. |
-| `quoteAssetPrecision` | float | `0.001` | Precision of the contract price \(quoteAsset\). |
-| `inverse` | bool | `true` | Whether the contract is inverse. |
-| `index` | string | `BTCUSDT` | Index symbol of the underlying asset. Index price can be accessed at the `index` endpoint. For instance, `BTC-PERP-REV` uses `BTCUSDT` for index price. |
-| `contractMultiplier` | string | `true` | The multiplier of contract. |
-| `icebergAllowed` | string | `false` | Whether iceberg orders are allowed. |
+| `quoteAsset` | string | `USDT` | 定价资产。对于合约来说，这个是合约是以什么来结算的。 |
+| `quoteAssetPrecision` | float | `0.001` | 定价资产（合约价格）的精度。 |
+| `inverse` | bool | `true` | 合约是否为反向合约（true=是反向合约，false=是正向合约）。 |
+| `index` | string | `BTCUSDT` | 标的指数的名称。标的指数实时价格可在index端点访问得到。比如BTC-PERP-REV使用BTCUSDT为标的指数，那么可以在index端点寻找BTCUSDT的实时价格。 |
+| `contractMultiplier` | string | `true` | 合约的乘数。 |
+| `icebergAllowed` | string | `false` | 是否支持冰山订单。 |
 
-For `filters` in `contracts` field:
+在 contracts的filters信息组里:
+
+| 名称 | 类型 | 例子 | 描述 |
+| :--- | :--- | :--- | :--- |
+| `filterType` | string | `PRICE_FILTER` | 过滤器类型。 |
+| `minPrice` | float | `0.001` | 允许的最小价格。 |
+| `maxPrice` | float | `100000.00000000` | 允许的最大价格。 |
+| `tickSize` | float | `0.001` | 合约价格的精度。 |
+| `minQty` | float | `0.01` | 允许的最小数量。 |
+| `maxQty` | float | `100000.00000000` | 允许的最大数量。 |
+| `stepSize` | float | `0.001` | 合约数量的精度。 |
+| `minNotional` | float | `1` | 最小交易额限制(数量 * 价格) |
+
+在riskLimits信息组里:
 
 | name | type | example | description |
 | :--- | :--- | :--- | :--- |
-| `filterType` | string | `PRICE_FILTER` | Type of the filter. |
-| `minPrice` | float | `0.001` | Minimum price allowed |
-| `maxPrice` | float | `100000.00000000` | Maximum price allowed |
-| `tickSize` | float | `0.001` | Precision of the contract price. |
-| `minQty` | float | `0.01` | Minimum quantity allowed |
-| `maxQty` | float | `100000.00000000` | Maximum quantity allowed |
-| `stepSize` | float | `0.001` | Precision of the contract quantity |
-| `minNotional` | float | `1` | Minimum trade size \(quantity \* price\) |
-
-In the `riskLimits` filed:
-
-| name | type | example | description |
-| :--- | :--- | :--- | :--- |
-| `quantity` | float | `100` | Positions below this amount follows the following requirement. |
-| `initialMargin` | float | `0.1` | Initial margin rate requirement. |
-| `maintMargin` | float | `0.03` | Minimum maintenance margin rate requirement. |
+| `quantity` | float | `100` | 仓位小于此数且大于前一个档位的quantity的需要参照以下要求。 |
+| `initialMargin` | float | `0.1` | 初始保证金率。 |
+| `maintMargin` | float | `0.03` | 最小维持保证金率。 |
 
 #### **Example:**
 
@@ -236,7 +236,7 @@ In the `riskLimits` filed:
 
 ### `insurance` **\(PENDING\)**
 
-Get current insurance funding.
+标的指数价格
 
 #### **Request Weight:**
 
