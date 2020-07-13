@@ -1,75 +1,75 @@
-# Contract
+# 合约交易
 
-The base url of broker open API can be found [here](endpoint.md)
+Broker Open API的地址请见 [这里](endpoint.md)
 
-## Key parameter explanation:
+## 关键参数解释说明:
 
 ### `side`
 
-The side of the trade.
+交易的方向
 
-`BUY_OPEN`: open a long position.
+`BUY_OPEN`: 开多仓
 
-`SELL_CLOSE`: close a long position.
+`SELL_CLOSE`: 平多仓
 
-`SELL_OPEN`: open a short position.
+`SELL_OPEN`: 开空仓
 
-`BUY_CLOSE`: close a short position.
+`BUY_CLOSE`: 平空仓
 
 ### `priceType`
 
-Price types.
+价格类型
 
-`INPUT`: The system will use the price you entered exactly to fill the orders.
+`INPUT`: 系统将会用你输入的价格来撮合订单。
 
-`OPPONENT`: Orders will be filled using the opposite side's best quote.
+`OPPONENT`: 订单会以对手盘最优价格撮合。
 
-For example, if you are opening 10 contracts long, the best buy price is 10 and the best sell price is 11. You will send an order buying 10 contracts at 11. If the order, is not fully filled, the rest will be left on the orderbook.
+假设你开多10张合约，盘口最佳买价为10最佳卖价为11，你将会下10张价格为11的合约订单。如果盘口数量不足成交10张，剩下的将留在盘口。
 
-`QUEUE`: Order will be send using the same side's best quote.
+`QUEUE`: 订单会以相同方向的最优价格撮合。
 
-For example, if you are opening 10 contracts long, the best buy price is 10 and the best sell price is 11. You will be send an order buying 10 contracts at 10.
+假设你开多10张合约，盘口最佳买价为10最佳卖价为11，你将会下10张价格为10的合约订单。假设盘口原来有5张10的买单，加上你下的单现在一共有15张10的买单。
 
-`OVER`: The price will be the best opposite's quote + overPrice\(not a fixed value\).
+`OVER`: 订单会以对手盘的最优价格 + 超价（浮动）撮合
 
-For example, if you are opening 10 contracts long, the best buy price is 10 and the best sell price is 11, you set the overPrice at 3. You will be send an order buying 10 contracts at \(11+3\)=14.
+假设你开多10张合约，盘口最佳买价为10最佳卖价为11（超价现在为3），你将会下10张（11+3=）14的买单。如果盘口数量不足成交10张，剩下的将留在盘口。
 
-`MARKET`: The price will be newest price \* \(1 ± 5%\).
+`MARKET`: 订单会以 最新成交价 * (1 ± 5%) 撮合
 
-For example, if you are opening 10 contracts long, the latest price is 10. Then you will be sending out an order buying 10 contracts at \(10 \* 1.05\)=10.5.
+假设你开多10张合约，最新成交价为10，你将会下10张（10*1.05=)10.5的买单。
 
 ### `timeInForce`
 
-Time in force.
+时效单类型。
 
-`GTC`: Good till canceled. Meaning the order will stand unless otherwise cancelled.
+`GTC`: 一直有效直到撤销。订单会一直有效除非撤销。
 
-`IOC`: Immediate or cancel. Meaning the order will be cancelled if not executed immediately. Recommended if you want to fill the entire order immediately.
+`IOC`: 马上成交或者撤销。订单会在一个最佳可成交价执行尽量多的交易量, 此订单可能被部份执行,剩余的部份将会自动撤销。
 
-`FOK`: Fill or kill. Meaning the order will be canceled if not immediately filled. Recommended if you want to fill as much as possible, but not necessarily all of, the order immediately.
+`FOK`: 全部成交或者撤销。订单要么在一个最佳可成交价上全部成交，要么就会直接撤销。
 
-`LIMIT_MAKER`: Order will be cancelled if executed immediately.
+`LIMIT_MAKER`: 如果订单会马上成交，订单会被撤销。
 
 ### `orderType`
 
-Order type.
+订单类型
 
-`LIMIT`: Orders to be executed given a specified price or better.
+`LIMIT`: 订单会以一个给定（或者更好）的价格成交
 
-`STOP`: Order that will be triggered once it reaches the `triggerPrice`.
+`STOP`: 一旦价格到达triggerPrice（触发价），订单会被触发
 
-### `Rate limiters(rateLimitType)`
+### `频率限制类型(rateLimitType)`
 
 *  REQUESTS_WEIGHT
 *  ORDERS
 
-### `Rate limit intervals`
+### `频率限制区间`
 
 * SECOND
 * MINUTE
 * DAY
 
-For example:
+比如:
 ```javascript
 {
   "rateLimitType": "ORDERS",
@@ -78,7 +78,7 @@ For example:
 }
 ```
 
-## Public API
+## 公共接口
 
 ### `brokerInfo`
 
