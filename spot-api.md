@@ -1,61 +1,61 @@
-# Spot
+# 币币交易
 
-## Terminology
+## 术语解释
 
-* `base asset` refers to the asset that is the `quantity` of a symbol.
-* `quote asset` refers to the asset that is the `price` of a symbol.
+* `base asset` 指的是symbol的quantity（即数量）。
+* `quote asset` 指的是symbol的price（即价格）。
 
-## ENUM definitions
+## ENUM 定义
 
-**Symbol status:**
+**Symbol 状态:**
 
-* TRADING
-* HALT
-* BREAK
+* TRADING - 交易中
+* HALT - 终止
+* BREAK - 断开
 
-**Symbol type:**
+**Symbol 类型:**
 
-* SPOT
+* SPOT - 现货
 
-**Asset type:**
+**资产类型:**
 
-* CASH
-* MARGIN
+* CASH - 现金
+* MARGIN - 保证金
 
-**Order status:**
+**订单状态:**
 
-* NEW
-* PARTIALLY\_FILLED
-* FILLED
-* CANCELED
-* PENDING\_CANCEL
-* REJECTED
+* NEW - 新订单，暂无成交
+* PARTIALLY\_FILLED - 部分成交
+* FILLED - 完全成交
+* CANCELED - 已取消
+* PENDING\_CANCEL - 等待取消
+* REJECTED - 被拒绝
 
-**Order types:**
+**订单类型:**
 
-* LIMIT
-* MARKET
-* LIMIT\_MAKER
-* STOP\_LOSS \(unavailable now\)
-* STOP\_LOSS\_LIMIT \(unavailable now\)
-* TAKE\_PROFIT \(unavailable now\)
-* TAKE\_PROFIT\_LIMIT \(unavailable now\)
-* MARKET\_OF\_PAYOUT \(unavailable now\)
+* LIMIT - 限价单
+* MARKET - 市价单
+* LIMIT\_MAKER - maker限价单
+* STOP\_LOSS \(unavailable now\) - 暂无
+* STOP\_LOSS\_LIMIT \(unavailable now\) - 暂无
+* TAKE\_PROFIT \(unavailable now\) - 暂无
+* TAKE\_PROFIT\_LIMIT \(unavailable now\) - 暂无
+* MARKET\_OF\_PAYOUT \(unavailable now\) - 暂无
 
-**Order side:**
+**订单方向:**
 
-* BUY
-* SELL
+* BUY - 买单
+* SELL - 卖单
 
-**Time in force:**
+**订单时效类型:**
 
 * GTC
 * IOC
 * FOK
 
-**Kline/Candlestick chart intervals:**
+**k线/烛线图区间:**
 
-m -&gt; minutes; h -&gt; hours; d -&gt; days; w -&gt; weeks; M -&gt; months
+m -&gt; 分钟; h -&gt; 小时; d -&gt; 天; w -&gt; 周; M -&gt; 月
 
 * 1m
 * 3m
@@ -73,18 +73,18 @@ m -&gt; minutes; h -&gt; hours; d -&gt; days; w -&gt; weeks; M -&gt; months
 * 1w
 * 1M
 
-**Rate limiters \(rateLimitType\)**
+**频率限制类型 (rateLimitType)**
 
 * REQUESTS\_WEIGHT
 * ORDERS
 
-**Rate limit intervals**
+**频率限制区间**
 
 * SECOND
 * MINUTE
 * DAY
 
-For example:
+比如:
 ```javascript
 {
   "rateLimitType": "ORDERS",
@@ -93,15 +93,15 @@ For example:
 }
 ```
 
-## General API
+## 通用接口
 
-### Test connectivity
+### 测试连接
 
 ```text
 GET /openapi/v1/ping
 ```
 
-Test connectivity to the Rest API.
+测试REST API的连接。
 
 **Weight:** 0
 
@@ -113,13 +113,13 @@ Test connectivity to the Rest API.
 {}
 ```
 
-### Check server time
+### 服务器时间
 
 ```text
 GET /openapi/v1/time
 ```
 
-Test connectivity to the Rest API and get the current server time.
+测试连接并获取当前服务器的时间。
 
 **Weight:** 0
 
@@ -133,13 +133,13 @@ Test connectivity to the Rest API and get the current server time.
 }
 ```
 
-### Broker information
+### Broker信息
 
 ```text
 GET /openapi/v1/brokerInfo
 ```
 
-Current broker trading rules and symbol information
+当前broker交易规则和symbol信息
 
 **Weight:** 0
 
@@ -194,15 +194,15 @@ Current broker trading rules and symbol information
 }
 ```
 
-## Market Data API
+## 行情接口
 
-### Order book
+### 订单簿
 
 ```text
 GET /openapi/quote/v1/depth
 ```
 
-**Weight:** Adjusted based on the limit:
+**Weight:** 根据limit不同:
 
 | Limit | Weight |
 | :--- | :--- |
@@ -212,23 +212,23 @@ GET /openapi/quote/v1/depth
 
 **Parameters:**
 
-| Name | Type | Mandatory | Description |
+| 名称 | 类型 | 是否强制 | 描述 |
 | :--- | :--- | :--- | :--- |
 | symbol | STRING | YES |  |
-| limit | INT | NO | Default 100; max 100. |
+| limit | INT | NO | 默认 100; 最大 100 |
 
-**Caution:** setting limit=0 can return a lot of data.
+**Caution:** 如果设置limit=0会返回很多数据。
 
 **Response:**
 
-\[PRICE, QTY\]
+[价格, 数量]
 
 ```javascript
 {
   "bids": [
     [
-      "3.90000000",   // PRICE
-      "431.00000000"  // QTY
+      "3.90000000",   // 价格
+      "431.00000000"  // 数量
     ],
     [
       "4.00000000",
@@ -237,8 +237,8 @@ GET /openapi/quote/v1/depth
   ],
   "asks": [
     [
-      "4.00000200",  // PRICE
-      "12.00000000"  // QTY
+      "4.00000200",  // 价格
+      "12.00000000"  // 数量
     ],
     [
       "5.10000000",
@@ -248,19 +248,19 @@ GET /openapi/quote/v1/depth
 }
 ```
 
-### Recent trades list
+### 最近成交
 
 ```text
 GET /openapi/quote/v1/trades
 ```
 
-Get recent trades \(up to last 500\).
+获取当前最新成交（最多500）
 
 **Weight:** 1
 
 **Parameters:**
 
-| Name | Type | Mandatory | Description |
+| 名称 | 类型 | 是否强制 | 描述 |
 | :--- | :--- | :--- | :--- |
 | symbol | STRING | YES |  |
 | limit | INT | NO | Default 500; max 1000. |
@@ -278,27 +278,27 @@ Get recent trades \(up to last 500\).
 ]
 ```
 
-### Kline/Candlestick data
+### k线/烛线图数据
 
 ```text
 GET /openapi/quote/v1/klines
 ```
 
-Kline/candlestick bars for a symbol. Klines are uniquely identified by their open time.
+symbol的k线/烛线图数据 K线会根据开盘时间而辨别。
 
 **Weight:** 1
 
 **Parameters:**
 
-| Name | Type | Mandatory | Description |
+| 名称 | 类型 | 是否强制 | 描述 |
 | :--- | :--- | :--- | :--- |
 | symbol | STRING | YES |  |
 | interval | ENUM | YES |  |
 | startTime | LONG | NO |  |
 | endTime | LONG | NO |  |
-| limit | INT | NO | Default 500; max 1000. |
+| limit | INT | NO | 默认500; 最大1000. |
 
-* If startTime and endTime are not sent, the most recent klines are returned.
+* 如果startTime和endTime没有发送，只有最新的K线会被返回。
 
 **Response:**
 
@@ -320,23 +320,23 @@ Kline/candlestick bars for a symbol. Klines are uniquely identified by their ope
 ]
 ```
 
-### 24hr ticker price change statistics
+### 24小时ticker价格变化数据
 
 ```text
 GET /openapi/quote/v1/ticker/24hr
 ```
 
-24 hour price change statistics. **Careful** when accessing this with no symbol.
+24小时价格变化数据。**注意** 如果没有发送symbol，会返回很多数据。
 
-**Weight:** 1 for a single symbol; **40** when the symbol parameter is omitted
+**Weight:** 如果只有一个symbol，1; 如果symbol没有被发送，**40**。
 
 **Parameters:**
 
-| Name | Type | Mandatory | Description |
+| 名称 | 类型 | 是否强制 | 描述 |
 | :--- | :--- | :--- | :--- |
 | symbol | STRING | NO |  |
 
-* If the symbol is not sent, tickers for all symbols will be returned in an array.
+* 如果symbol没有被发送，所有symbol的数据都会被返回。
 
 **Response:**
 
@@ -370,23 +370,23 @@ OR
 ]
 ```
 
-### Symbol price ticker
+### Symbol价格
 
 ```text
 GET /openapi/quote/v1/ticker/price
 ```
 
-Latest price for a symbol or symbols.
+单个或多个symbol的最新价
 
 **Weight:** 1
 
 **Parameters:**
 
-| Name | Type | Mandatory | Description |
+| 名称 | 类型 | 是否强制 | 描述 |
 | :--- | :--- | :--- | :--- |
 | symbol | STRING | NO |  |
 
-* If the symbol is not sent, prices for all symbols will be returned in an array.
+* 如果symbol没有发送，所有symbol的最新价都会被返回。
 
 **Response:**
 
@@ -411,23 +411,23 @@ OR
 ]
 ```
 
-### Symbol order book ticker
+### Symbol最佳订单簿价格
 
 ```text
 GET /openapi/quote/v1/ticker/bookTicker
 ```
 
-Best price/qty on the order book for a symbol or symbols.
+单个或者多个symbol的最佳买单卖单价格。
 
 **Weight:** 1
 
 **Parameters:**
 
-| Name | Type | Mandatory | Description |
+| 名称 | 类型 | 是否强制 | 描述 |
 | :--- | :--- | :--- | :--- |
 | symbol | STRING | NO |  |
 
-* If the symbol is not sent, bookTickers for all symbols will be returned in an array.
+* 如果symbol没有被发送，所有symbol的最佳订单簿价格都会被返回。
 
 **Response:**
 
@@ -462,21 +462,21 @@ OR
 ]
 ```
 
-## Account API
+## 账户接口
 
-### New order  \(TRADE\)
+### 创建新订单   \(TRADE\)
 
 ```text
 POST /openapi/v1/order  (HMAC SHA256)
 ```
 
-Send in a new order.
+发送一个新的订单
 
 **Weight:** 1
 
 **Parameters:**
 
-| Name | Type | Mandatory | Description |
+| 名称 | 类型 | 是否强制 | 描述 |
 | :--- | :--- | :--- | :--- |
 | symbol | STRING | YES |  |
 | assetType | STRING | NO |  |
@@ -485,22 +485,22 @@ Send in a new order.
 | timeInForce | ENUM | NO |  |
 | quantity | DECIMAL | YES |  |
 | price | DECIMAL | NO |  |
-| newClientOrderId | STRING | NO | A unique id for the order. Automatically generated if not sent. |
-| stopPrice | DECIMAL | NO | Used with `STOP_LOSS`, `STOP_LOSS_LIMIT`, `TAKE_PROFIT`, and `TAKE_PROFIT_LIMIT` orders. Unavailable |
-| icebergQty | DECIMAL | NO | Used with `LIMIT`, `STOP_LOSS_LIMIT`, and `TAKE_PROFIT_LIMIT` to create an iceberg order. Unavailable |
+| newClientOrderId | STRING | NO | 一个自己给订单定义的ID，如果没有发送会自动生成。 |
+| stopPrice | DECIMAL | NO | 与 STOP_LOSS, STOP_LOSS_LIMIT, TAKE_PROFIT, 和TAKE_PROFIT_LIMIT 订单一起使用. 当前不可用 |
+| icebergQty | DECIMAL | NO | 与 LIMIT, STOP_LOSS_LIMIT, 和 TAKE_PROFIT_LIMIT 来创建冰山订单. 当前不可用 |
 | recvWindow | LONG | NO |  |
 | timestamp | LONG | YES |  |
 
-Additional mandatory parameters based on `type`:
+在`type`上的额外强制参数:
 
-| Type | Additional mandatory parameters |
+| 类型 | 额外强制参数 |
 | :--- | :--- |
 | `LIMIT` | `timeInForce`, `quantity`, `price` |
 | `MARKET` | `quantity` |
-| `STOP_LOSS` | `quantity`, `stopPrice` |
-| `STOP_LOSS_LIMIT` | `timeInForce`, `quantity`,  `price`, `stopPrice` |
-| `TAKE_PROFIT` | `quantity`, `stopPrice` |
-| `TAKE_PROFIT_LIMIT` | `timeInForce`, `quantity`, `price`, `stopPrice` |
+| `STOP_LOSS` | `quantity`, `stopPrice` 当前不可用|
+| `STOP_LOSS_LIMIT` | `timeInForce`, `quantity`,  `price`, `stopPrice` 当前不可用|
+| `TAKE_PROFIT` | `quantity`, `stopPrice` 当前不可用|
+| `TAKE_PROFIT_LIMIT` | `timeInForce`, `quantity`, `price`, `stopPrice` 当前不可用|
 | `LIMIT_MAKER` | `quantity`, `price` |
 
 Other info:
@@ -524,19 +524,19 @@ Trigger order price rules against market price for both MARKET and LIMIT version
 }
 ```
 
-### Test new order \(TRADE\)
+### 测试新订单 \(TRADE\)
 
 ```text
 POST /openapi/v1/order/test (HMAC SHA256)
 ```
 
-Test new order creation and signature/recvWindow long. Creates and validates a new order but does not send it into the matching engine.
+用signature和recvWindow测试生成新订单。 创建和验证一个新订单但是不送入撮合引擎。
 
 **Weight:** 1
 
 **Parameters:**
 
-Same as `POST /openapi/v1/order`
+和 `POST /openapi/v1/order` 一样。
 
 **Response:**
 
@@ -544,19 +544,19 @@ Same as `POST /openapi/v1/order`
 {}
 ```
 
-### Query order \(USER\_DATA\)
+### 查询订单 \(USER\_DATA\)
 
 ```text
 GET /openapi/v1/order (HMAC SHA256)
 ```
 
-Check an order's status.
+查询订单状态。
 
 **Weight:** 1
 
 **Parameters:**
 
-| Name | Type | Mandatory | Description |
+| 名称 | 类型 | 是否强制 | 描述 |
 | :--- | :--- | :--- | :--- |
 | orderId | LONG | NO |  |
 | origClientOrderId | STRING | NO |  |
@@ -565,8 +565,8 @@ Check an order's status.
 
 Notes:
 
-* Either `orderId` or `origClientOrderId` must be sent.
-* For some historical orders `cummulativeQuoteQty` will be &lt; 0, meaning the data is not available at this time.
+* 单一  `orderId` 或者 `origClientOrderId` 必须被发送。 
+* 对于某些历史数据  `cummulativeQuoteQty`  可能会 < 0, 这说明数据当前不可用。
 
 **Response:**
 
@@ -592,26 +592,26 @@ Notes:
 }
 ```
 
-### Cancel order \(TRADE\)
+### 取消订单 \(TRADE\)
 
 ```text
 DELETE /openapi/v1/order  (HMAC SHA256)
 ```
 
-Cancel an active order.
+取消当前正在交易的订单。
 
 **Weight:** 1
 
 **Parameters:**
 
-| Name | Type | Mandatory | Description |
+| 名称 | 类型 | 是否强制 | 描述 |
 | :--- | :--- | :--- | :--- |
 | orderId | LONG | NO |  |
 | clientOrderId | STRING | NO |  |
 | recvWindow | LONG | NO |  |
 | timestamp | LONG | YES |  |
 
-Either `orderId` or `clientOrderId` must be sent.
+单一 `orderId` 或者 `clientOrderId`。
 
 **Response:**
 
@@ -624,19 +624,19 @@ Either `orderId` or `clientOrderId` must be sent.
 }
 ```
 
-### Current open orders \(USER\_DATA\)
+### 当前订单 \(USER\_DATA\)
 
 ```text
 GET /openapi/v1/openOrders  (HMAC SHA256)
 ```
 
-GET all open orders on a symbol. **Careful** when accessing this with no symbol.
+获取当前单个或者多个symbol的当前订单。 **注意** 如果没有发送symbol，会返回很多数据。
 
 **Weight:** 1
 
 **Parameters:**
 
-| Name | Type | Mandatory | Description |
+| 名称 | 类型 | 是否强制 | 描述 |
 | :--- | :--- | :--- | :--- |
 | symbol | String | NO |  |
 | orderId | LONG | NO |  |
@@ -646,7 +646,7 @@ GET all open orders on a symbol. **Careful** when accessing this with no symbol.
 
 **Notes:**
 
-* If `orderId` is set, it will get orders &lt; that `orderId`. Otherwise most recent orders are returned.
+* 如果 `orderId`设定好了，会筛选订单小于 `orderId`的。否则会返回最近的订单信息。
 
 **Response:**
 
