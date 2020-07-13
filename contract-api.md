@@ -82,7 +82,7 @@ Broker Open API的地址请见 [这里](endpoint.md)
 
 ### `brokerInfo`
 
-Current broker trading rules and symbol information.
+获取当前broker的交易规则和合约symbol的信息（精度单位等信息），包括合约的风险限额和乘数等信息。
 
 #### **Request Weight:**
 
@@ -96,33 +96,33 @@ GET /openapi/v1/brokerInfo
 
 #### **Parameters：**
 
-| name | type | required | default | description |
+| 名称 | 类型 | 是否强制 | 默认 | 描述 |
 | :--- | :--- | :--- | :--- | :--- |
-| `type` | string | `NO` |  | Trading section information. Possible values include `token`, `options`, and `contracts`. If the parameter is not sent, all trading information will be returned. |
+| `type` | string | `NO` |  | 交易类型，支持的类型现为token（币币）、options（期权）、contracts（合约）。如果没有发送此参数，所有交易类型的symbol信息都会被返回。 |
 
 #### **Response:**
 
-| name | type | example | description |
+| 名称 | 类型 | 例子 | 描述 |
 | :--- | :--- | :--- | :--- |
-| `timezone` | string | `UTC` | Timezone of timestamp |
-| `serverTime` | long | `1554887652929` | Retrieves the current time on server \(in ms\). |
+| `timezone` | string | `UTC` | 时间戳的时区。 |
+| `serverTime` | long | `1554887652929` | 返回现在的服务器时间戳（毫秒级） |
 
-In the `rateLimits` field: Order api request limit will be displayed.
+在rateLimits信息组里: 下单api的请求限制将会被展示。
 
-| name | type | example | description |
+| 名称 | 类型 | 例子 | 描述 |
 | :--- | :--- | :--- | :--- |
-| `rateLimitType` | string | `ORDERS` | Rate Limit type |
-| `interval` | string | `SECOND` | Rate Limit interval |
-| `limit` | string | `1500` | Rate Limit value within the interval. |
+| `rateLimitType` | string | `ORDERS` | 速度限制类型 |
+| `interval` | string | `SECOND` | 速度限制区间 |
+| `limit` | string | `1500` | 速度限制区间价值 |
 
-In the `contracts` field: All actively trading contracts will be displayed.
+在contracts信息组里: 所有当前券商正在交易的合约的信息将会被返回：
 
-| name | type | example | description |
+| 名称 | 类型 | 例子 | 描述 |
 | :--- | :--- | :--- | :--- |
-| `symbol` | string | `BTCUSD` | Name of the contract. |
-| `status` | string | `TRADING` | Status of the contract. |
-| `baseAsset` | string | `BTCUSD` | Base Asset of the trading pair. In the case with contracts, the contract itself is the base asset. |
-| `baseAssetPrecision` | float | `0.001` | Precision of the contract quantity \(baseAsset\). |
+| `symbol` | string | `BTCUSD` | 合约名称 |
+| `status` | string | `TRADING` | 合约状态 |
+| `baseAsset` | string | `BTCUSD` | 基础资产。对于合约来说，合约本身就是基础资产。 |
+| `baseAssetPrecision` | float | `0.001` | 基础资产（合约数量）的精度 |
 | `quoteAsset` | string | `USDT` | Quote asset for the contract. Meaning the contract is quoted in that currency. |
 | `quoteAssetPrecision` | float | `0.001` | Precision of the contract price \(quoteAsset\). |
 | `inverse` | bool | `true` | Whether the contract is inverse. |
