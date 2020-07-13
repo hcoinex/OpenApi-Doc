@@ -236,7 +236,7 @@ GET /openapi/v1/brokerInfo
 
 ### `insurance` **\(PENDING\)**
 
-标的指数价格
+Get current insurance funding.
 
 #### **Request Weight:**
 
@@ -281,7 +281,7 @@ GET /openapi/contract/v1/insurance
 
 ### `index`
 
-Underlying asset index price.
+标的指数价格
 
 #### **Request Weight:**
 
@@ -295,18 +295,18 @@ GET /openapi/quote/v1/contract/index
 
 #### **Parameters：**
 
-| name | type | required | default | description |
+| 名称 | 类型 | 是否强制 | 默认 | 描述 |
 | :--- | :--- | :--- | :--- | :--- |
-| symbol | string | `NO` |  | Underlying index symbol. If this parameter is not sent, all symbols |
+| symbol | string | `NO` |  | 标的指数名称。如果这个没有发送，所有标的指数的价格都会被返回。 |
 
 will be returned.
 
 #### **Response:**
 
-| name | type | example | description |
+| 名称 | 类型 | 例子 | 描述 |
 | :--- | :--- | :--- | :--- |
-| `index` | float | `8342.73` | The index price of the instrument. |
-| `EDP` | float | `8432.32` | The EDP \(estimated delivery price of the contract\). The average price of the index in the last 1o minutes. This will be the price on which the contract is going to be settled. |
+| `index` | float | `8342.73` | 标的指数的价格。 |
+| `EDP` | float | `8432.32` | 标的指数的EDP(预估交割价，过去10分钟指数价格的平均值）。 |
 
 #### **Example:**
 
@@ -329,7 +329,7 @@ will be returned.
 
 ### `fundingRate`
 
-Get current funding rate \(_historical in process_\)
+获取当前资金费率 (历史资金费率正在建设)
 
 #### **Request Weight:**
 
@@ -343,23 +343,23 @@ GET /openapi/contract/v1/fundingRate
 
 #### **Parameters：**
 
-| name | type | required | default | description |
+| 名称 | 类型 | 是否强制 | 默认 | 描述 |
 | :--- | :--- | :--- | :--- | :--- |
-| `symbol` | string | `NO` |  | The contract to be returned. If not sent, records for all symbols will be returned as a result. |
-| `state` | string | `NO` | `current` | Get `current` or `past` funding rate. |
-| `from` | long | `NO` |  | Timestamp to start. |
-| `to` | long | `NO` |  | Timestamp to end. |
-| `limit` | integer | `NO` | `20` | Number of entries returned. |
+| `symbol` | string | `NO` |  | 合约名称。如果没有发送该参数，所有合约的资金费率都会被返回。 |
+| `state` | string | `NO` | `current` | 获取current（当前）或者past（历史）的资金费率。 |
+| `from` | long | `NO` |  | 开始时间戳。 |
+| `to` | long | `NO` |  | 结束时间戳。 |
+| `limit` | integer | `NO` | `20` | 返回条数。 |
 
 #### **Response:**
 
-| name | type | example | description |
+| 名称 | 类型 | 例子 | 描述 |
 | :--- | :--- | :--- | :--- |
-| `symbol` | string | `BTCUSD` | Name of the contracts |
-| `intervalStart` | long | `1554710400000` | Timestamp when the interval started. |
-| `intervalEnd` | long | `1554710400000` | Timestamp when the interval ended. |
-| `rate` | float | `0.00321` | The funding rate of this interval. |
-| `index` | float | `10076.34` | Index price at the time of settlement. |
+| `symbol` | string | `BTCUSD` | 合约名称 |
+| `intervalStart` | long | `1554710400000` | 本次结算开始时间。 |
+| `intervalEnd` | long | `1554710400000` | 本次结算结束时间。 |
+| `rate` | float | `0.00321` | 该次结算资金费率。 |
+| `index` | float | `10076.34` | 结算时的指数价格。 |
 
 #### **Example:**
 
@@ -376,13 +376,13 @@ GET /openapi/contract/v1/fundingRate
 
 ### `depth`
 
-Retrieves the contracts order book.
+获取当前订单簿的数据。
 
 #### **Request Weight:**
 
-Adjusted based on the limit:
+根据数量会不一样，请求数量越多，重量越大:
 
-| Limit | Weight |
+| 数量 | 请求重量 |
 | :--- | :--- |
 | 5, 10, 20, 50, 100 | 1 |
 | 500 | 5 |
@@ -396,25 +396,25 @@ GET /openapi/quote/v1/contract/depth
 
 #### **Parameters:**
 
-| parameter | type | required | default | description |
+| 名称 | 类型 | 是否强制 | 默认 | 描述 |
 | :--- | :--- | :--- | :--- | :--- |
-| `symbol` | string | `YES` |  | The contract name for which to retrieve the order book |
-| `limit` | integer | `NO` | `100` \(max = 100\) | The number of entries to return for bids and asks. |
+| `symbol` | string | `YES` |  | 用来获取订单簿的合约名称。 |
+| `limit` | integer | `NO` | `100` \(max = 100\) | 返回bids和asks的数量 |
 
 #### **Response:**
 
-| name | type | example | description |
+| 名称 | 类型 | 例子 | 描述 |
 | :--- | :--- | :--- | :--- |
-| `time` | long | `1550829103981` | Current timestamp \(ms\) |
-| `bids` | list | \(see below\) | List of all bids, best bids first. See below for entry details. |
-| `asks` | list | \(see below\) | List of all asks, best asks first. See below for entry details. |
+| `time` | long | `1550829103981` | 当前时间（Unix Timestamp，毫秒ms） |
+| `bids` | list | \(如下\) | 所有bid的价格和数量信息，最优bid价格由上到下排列。 |
+| `asks` | list | \(如下\) | 所有ask的价格和数量信息，最优ask价格由上到下排列。 |
 
-The fields `bids` and `asks` are lists of orderbook price level entries, sorted from best to worst.
+bids和asks所对应的信息组代表了订单簿的所有价格以及价格对应数量的信息，由最优价格从上到下排列。
 
-| name | type | example | description |
+| 名称 | 类型 | 例子 | 描述 |
 | :--- | :--- | :--- | :--- |
-| `''` | float | `123.10` | price level |
-| `''` | float | `300` | The total quantity of orders for this price level |
+| `''` | float | `123.10` | 价格 |
+| `''` | float | `300` | 当前价格对应的数量 |
 
 #### **Example:**
 
@@ -454,7 +454,7 @@ The fields `bids` and `asks` are lists of orderbook price level entries, sorted 
 
 ### `trades`
 
-Retrieve the latest trades that have occurred for a specific contract.
+获取某个合约最近成交订单的信息。
 
 #### **Request Weight:**
 
@@ -468,14 +468,14 @@ GET /openapi/quote/v1/contract/trades
 
 #### **Parameters：**
 
-| Parameter | type | required | default | description |
+| 名称 | 类型 | 是否强制 | 默认 | 描述 |
 | :--- | :--- | :--- | :--- | :--- |
-| `symbol` | string | `YES` |  | The name of the contract. |
-| `limit` | integer | `NO` \(clamped to max 1000\) | `100` | The number of trades returned |
+| `symbol` | string | `YES` |  | 合约名称 |
+| `limit` | integer | `NO` \(clamped to max 1000\) | `100` | 返回成交订单的数量 |
 
 #### **Response:**
 
-| name | type | example | description |
+| 名称 | 类型 | 例子 | 描述 |
 | :--- | :--- | :--- | :--- |
 | `price` | float | `0.055` | The price of the trade |
 | `time` | long | `1537797044116` | Current timestamp \(ms\) |
