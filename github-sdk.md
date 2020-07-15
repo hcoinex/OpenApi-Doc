@@ -1,5 +1,5 @@
 # Github SDK
 
-For more information on our SDK and documentation, please visit [here](https://github.com/jbexpub/JBEX-OpenApi).
+更多关于SDK和文档的信息，请访问 [这里](https://github.com/jbexpub/JBEX-OpenApi).
 
-If you have any questions regarding our API documentation, please contact our online customer support or leave a message at the Github issues section.
+如果你对API文档说明有什么疑惑，欢迎联系在线客服或者在Github的Issues下方留言，我们会尽快解决。
