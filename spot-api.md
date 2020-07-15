@@ -1049,19 +1049,19 @@ POST /openapi/v1/userDataStream
 }
 ```
 
-### Keepalive user data stream \(USER\_STREAM\)
+### Keepalive 用户信息流  \(USER\_STREAM\)
 
 ```text
 PUT /openapi/v1/userDataStream
 ```
 
-Keepalive a user data stream to prevent a time out. User data streams will close after 60 minutes. It's recommended to send a ping about every 30 minutes.
+维持用户信息流来防止断开连接。用户信息流会在60分钟后自动中断，所以建议30分钟发送一次ping请求。
 
 **Weight:** 1
 
 **Parameters:**
 
-| Name | Type | Mandatory | Description |
+| 名称 | 类型 | 是否强制 | 描述 |
 | :--- | :--- | :--- | :--- |
 | listenKey | STRING | YES |  |
 | recvWindow | LONG | NO |  |
@@ -1073,19 +1073,19 @@ Keepalive a user data stream to prevent a time out. User data streams will close
 {}
 ```
 
-### Close user data stream \(USER\_STREAM\)
+### 关闭用户信息流 \(USER\_STREAM\)
 
 ```text
 DELETE /openapi/v1/userDataStream
 ```
 
-Close out a user data stream.
+关闭用户信息流
 
 **Weight:** 1
 
 **Parameters:**
 
-| Name | Type | Mandatory | Description |
+| 名称 | 类型 | 是否强制 | 描述 |
 | :--- | :--- | :--- | :--- |
 | listenKey | STRING | YES |  |
 | recvWindow | LONG | NO |  |
@@ -1097,27 +1097,27 @@ Close out a user data stream.
 {}
 ```
 
-## Filters
+## 过滤层
 
-Filters define trading rules on a symbol or an broker. Filters come in two forms: `symbol filters` and `broker filters`.
+过滤层（filter）定义某个broker的某个symbol的交易规则 过滤层（filter）有两个大类：`symbol filters` 和 `broker filters`.
 
-### Symbol filters
+### Symbol过滤层
 
 #### PRICE\_FILTER
 
-The `PRICE_FILTER` defines the `price` rules for a symbol. There are 3 parts:
+`PRICE_FILTER` 定义某个symbol的 `price` 精度. 一共有3个部分： 
 
-* `minPrice` defines the minimum `price`/`stopPrice` allowed.
-* `maxPrice` defines the maximum `price`/`stopPrice` allowed.
-* `tickSize` defines the intervals that a `price`/`stopPrice` can be increased/decreased by.
+* `minPrice`  定义最小允许的 `price`/`stopPrice` 
+* `maxPrice` 定义最大允许的  `price`/`stopPrice` 
+* `tickSize` 定义 `price`/`stopPrice` 可以增加和减少的间隔。
 
-In order to pass the `price filter`, the following must be true for `price`/`stopPrice`:
+如果要通过 `price filter`要求，`price`/`stopPrice`必须满足:
 
 * `price` &gt;= `minPrice`
 * `price` &lt;= `maxPrice`
 * \(`price`-`minPrice`\) % `tickSize` == 0
 
-**/brokerInfo format:**
+**/brokerInfo 格式:**
 
 ```javascript
   {
@@ -1130,19 +1130,19 @@ In order to pass the `price filter`, the following must be true for `price`/`sto
 
 #### LOT\_SIZE
 
-The `LOT_SIZE` filter defines the `quantity` \(aka "lots" in auction terms\) rules for a symbol. There are 3 parts:
+The `LOT_SIZE` 过滤层定义某个symbol  `quantity` \(在拍卖行里又称为"lots"）的精度。 一共有三个部分：
 
-* `minQty` defines the minimum `quantity`/`icebergQty` allowed.
-* `maxQty` defines the maximum `quantity`/`icebergQty` allowed.
-* `stepSize` defines the intervals that a `quantity`/`icebergQty` can be increased/decreased by.
+* `minQty` 定义最小允许的 `quantity`/`icebergQty` 
+* `maxQty` 定义最大允许的 `quantity`/`icebergQty` 
+* `stepSize` 定义 `quantity`/`icebergQty` 可以增加和减少的间隔。
 
-In order to pass the `lot size`, the following must be true for `quantity`/`icebergQty`:
+如果要通过 `lot size`要求,  `quantity`/`icebergQty`必须满足:
 
 * `quantity` &gt;= `minQty`
 * `quantity` &lt;= `maxQty`
 * \(`quantity`-`minQty`\) % `stepSize` == 0
 
-**/brokerInfo format:**
+**/brokerInfo 格式:**
 
 ```javascript
   {
@@ -1155,7 +1155,7 @@ In order to pass the `lot size`, the following must be true for `quantity`/`iceb
 
 #### MIN\_NOTIONAL
 
-The `MIN_NOTIONAL` filter defines the minimum notional value allowed for an order on a symbol. An order's notional value is the `price` \* `quantity`.
+`MIN_NOTIONAL` 过滤层定义某个symbol的名义金额精度。一个订单的名义金额为 `price` \* `quantity`.
 
 **/brokerInfo format:**
 
@@ -1168,7 +1168,7 @@ The `MIN_NOTIONAL` filter defines the minimum notional value allowed for an orde
 
 #### MAX\_NUM\_ORDERS
 
-The `MAX_NUM_ORDERS` filter defines the maximum number of orders an account is allowed to have open on a symbol. Note that both "algo" orders and normal orders are counted for this filter.
+The `MAX_NUM_ORDERS` 过滤层定义账户在某个symbol上的最大挂单数。请注意，此过滤层同时计算“算法”订单和普通订单。
 
 **/brokerInfo format:**
 
@@ -1181,7 +1181,7 @@ The `MAX_NUM_ORDERS` filter defines the maximum number of orders an account is a
 
 #### MAX\_NUM\_ALGO\_ORDERS
 
-The `MAX_ALGO_ORDERS` filter defines the maximum number of "algo" orders an account is allowed to have open on a symbol. "Algo" orders are `STOP_LOSS`, `STOP_LOSS_LIMIT`, `TAKE_PROFIT`, and `TAKE_PROFIT_LIMIT` orders.
+`MAX_ALGO_ORDERS` 过滤层定义账户在某个symbol上的最大“算法”挂单数。“算法”订单包括 `STOP_LOSS`, `STOP_LOSS_LIMIT`, `TAKE_PROFIT`, `TAKE_PROFIT_LIMIT` 等订单类型。
 
 **/brokerInfo format:**
 
@@ -1194,7 +1194,7 @@ The `MAX_ALGO_ORDERS` filter defines the maximum number of "algo" orders an acco
 
 #### ICEBERG\_PARTS
 
-The `ICEBERG_PARTS` filter defines the maximum parts an iceberg order can have. The number of `ICEBERG_PARTS` is defined as `CEIL(qty / icebergQty)`.
+`ICEBERG_PARTS` 过滤层定义冰山订单部件的最大值。 `ICEBERG_PARTS` 的定义为 `CEIL(qty / icebergQty)`.
 
 **/brokerInfo format:**
 
@@ -1209,7 +1209,7 @@ The `ICEBERG_PARTS` filter defines the maximum parts an iceberg order can have. 
 
 #### BROKER\_MAX\_NUM\_ORDERS
 
-The `MAX_NUM_ORDERS` filter defines the maximum number of orders an account is allowed to have open on the broker. Note that both "algo" orders and normal orders are counted for this filter.
+`MAX_NUM_ORDERS` 过滤层定义账户在broker上的最大挂单数。请注意，此过滤层同时计算“算法”订单和普通订单。
 
 **/brokerInfo format:**
 
@@ -1222,7 +1222,7 @@ The `MAX_NUM_ORDERS` filter defines the maximum number of orders an account is a
 
 #### BROKER\_MAX\_NUM\_ALGO\_ORDERS
 
-The `MAX_ALGO_ORDERS` filter defines the maximum number of "algo" orders an account is allowed to have open on the broker. "Algo" orders are `STOP_LOSS`, `STOP_LOSS_LIMIT`, `TAKE_PROFIT`, and `TAKE_PROFIT_LIMIT` orders.
+`MAX_ALGO_ORDERS` 过滤层定义账户在broker上的最大“算法”挂单数。“算法”订单包括`STOP_LOSS`, `STOP_LOSS_LIMIT`, `TAKE_PROFIT`, `TAKE_PROFIT_LIMIT` 等订单类型。
 
 **/brokerInfo format:**
 
