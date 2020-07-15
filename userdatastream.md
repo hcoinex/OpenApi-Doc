@@ -1,29 +1,29 @@
-# User Data Stream
+# 用户数据流推送
 
-## General WSS information
+## 基本信息
 
-* A User Data Stream `listenKey` is valid for 60 minutes after creation.
-* Doing a `PUT` on a `listenKey` will extend its validity for 60 minutes.
-* Doing a `DELETE` on a `listenKey` will close the stream.
-* User Data Streams are accessed at **/openapi/ws/\**
-* A single connection to api endpoint is only valid for 24 hours; expect to be disconnected at the 24 hour mark
-* User data stream payloads are **not guaranteed** to be in order during heavy periods; **make sure to order your updates using Event**
+* 一个用户数据流的`listenKey`在创建之后的有效期只有60分钟
+* 如果对`listenKey`做`PUT`请求可以延长有效期60分钟 
+* 如果对`listenKey`做`DELETE`请求会关闭推送
+* 用户数据流推送在这个端点 **/openapi/ws/** 访问
+* 单一API连接的有效期只有24小时，请做好在24小时后被断开连接的准备
+* 用户信息流返回在订单繁忙期**不保证**顺序正常，**请使用E字段进行排序**
 
-## User Data Stream API
+## 推送接口
 
-### Create a listenKey
+### 创建listenKey
 
 ```text
 POST /openapi/v1/userDataStream
 ```
 
-Start a new user data stream. The stream will close after 60 minutes unless a keepalive is sent.
+创建一个新的用户信息流。如果没有发送keepalive，推送将会在60分钟后断开。
 
 **Weight:** 1
 
 **Parameters:**
 
-| Name | Type | Mandatory | Description |
+| 名称 | 类型 | 是否强制 | 描述 |
 | :--- | :--- | :--- | :--- |
 | recvWindow | LONG | NO |  |
 | timestamp | LONG | YES |  |
@@ -36,19 +36,19 @@ Start a new user data stream. The stream will close after 60 minutes unless a ke
 }
 ```
 
-### Ping/Keep-alive a listenKey
+### 延长listenKey有效期
 
 ```text
 PUT /openapi/v1/userDataStream
 ```
 
-Keepalive a user data stream to prevent a time out. User data streams will close after 60 minutes. It's recommended to send a ping about every 30 minutes.
+发送PUT请求会有效期延长至本次调用后60分钟，建议每30分钟发送一个ping。
 
 **Weight:** 1
 
 **Parameters:**
 
-| Name | Type | Mandatory | Description |
+| 名称 | 类型 | 是否强制 | 描述 |
 | :--- | :--- | :--- | :--- |
 | listenKey | STRING | YES |  |
 | recvWindow | LONG | NO |  |
@@ -60,19 +60,19 @@ Keepalive a user data stream to prevent a time out. User data streams will close
 {}
 ```
 
-### Close a listenKey
+### 关闭listenKey
 
 ```text
 DELETE /openapi/v1/userDataStream
 ```
 
-Close out a user data stream.
+关闭用户数据流。
 
 **Weight:** 1
 
 **Parameters:**
 
-| Name | Type | Mandatory | Description |
+| 名称 | 类型 | 是否强制 | 描述 |
 | :--- | :--- | :--- | :--- |
 | listenKey | STRING | YES |  |
 | recvWindow | LONG | NO |  |
@@ -86,9 +86,9 @@ Close out a user data stream.
 
 ## Web Socket Payloads
 
-### Account Update
+### 账户更新
 
-Account state is updated with the `outboundAccountInfo` event.
+使用`outboundAccountInfo` event进行账户更新。
 
 **Payload:**
 
@@ -114,9 +114,9 @@ Account state is updated with the `outboundAccountInfo` event.
 }
 ```
 
-### Order Update
+### 订单更新
 
-Orders are updated with the `executionReport` event. Check the API documentation and below for relevant enum definitions. Average price can be found by doing `Z` divided by `z`.
+订单通过`executionReport`事件进行更新。详细说明信息请查看 API文档。通过将`Z`除以`z`可以找到平均价格。
 
 **Payload:**
 
@@ -157,9 +157,9 @@ Orders are updated with the `executionReport` event. Check the API documentation
 
 **Execution types:**
 
-* NEW
-* PARTIALLY\_FILLED
-* FILLED
-* CANCELED
-* REJECTED
+* NEW（新订单）
+* PARTIALLY_FILLED（部分成交）
+* FILLED（全部成交）
+* CANCELED（已撤销）
+* REJECTED（已拒绝）
 
